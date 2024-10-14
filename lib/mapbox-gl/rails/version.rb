@@ -12,9 +12,9 @@ module MapboxGl
     # Follows Mapbox GL JS versioning.
     module VERSION
       # Major version number
-      MAJOR = 2
+      MAJOR = 3
       # Minor version number
-      MINOR = 9
+      MINOR = 7
       # Smallest version number
       TINY = 0
 

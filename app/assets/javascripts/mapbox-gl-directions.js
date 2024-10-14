@@ -1,4 +1,77 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.MapboxDirections = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+var toPropertyKey = require("./toPropertyKey.js");
+function _defineProperty(obj, key, value) {
+  key = toPropertyKey(key);
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+  return obj;
+}
+module.exports = _defineProperty, module.exports.__esModule = true, module.exports["default"] = module.exports;
+},{"./toPropertyKey.js":4}],2:[function(require,module,exports){
+var defineProperty = require("./defineProperty.js");
+function ownKeys(object, enumerableOnly) {
+  var keys = Object.keys(object);
+  if (Object.getOwnPropertySymbols) {
+    var symbols = Object.getOwnPropertySymbols(object);
+    enumerableOnly && (symbols = symbols.filter(function (sym) {
+      return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+    })), keys.push.apply(keys, symbols);
+  }
+  return keys;
+}
+function _objectSpread2(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = null != arguments[i] ? arguments[i] : {};
+    i % 2 ? ownKeys(Object(source), !0).forEach(function (key) {
+      defineProperty(target, key, source[key]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) {
+      Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+    });
+  }
+  return target;
+}
+module.exports = _objectSpread2, module.exports.__esModule = true, module.exports["default"] = module.exports;
+},{"./defineProperty.js":1}],3:[function(require,module,exports){
+var _typeof = require("./typeof.js")["default"];
+function _toPrimitive(input, hint) {
+  if (_typeof(input) !== "object" || input === null) return input;
+  var prim = input[Symbol.toPrimitive];
+  if (prim !== undefined) {
+    var res = prim.call(input, hint || "default");
+    if (_typeof(res) !== "object") return res;
+    throw new TypeError("@@toPrimitive must return a primitive value.");
+  }
+  return (hint === "string" ? String : Number)(input);
+}
+module.exports = _toPrimitive, module.exports.__esModule = true, module.exports["default"] = module.exports;
+},{"./typeof.js":5}],4:[function(require,module,exports){
+var _typeof = require("./typeof.js")["default"];
+var toPrimitive = require("./toPrimitive.js");
+function _toPropertyKey(arg) {
+  var key = toPrimitive(arg, "string");
+  return _typeof(key) === "symbol" ? key : String(key);
+}
+module.exports = _toPropertyKey, module.exports.__esModule = true, module.exports["default"] = module.exports;
+},{"./toPrimitive.js":3,"./typeof.js":5}],5:[function(require,module,exports){
+function _typeof(obj) {
+  "@babel/helpers - typeof";
+
+  return (module.exports = _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) {
+    return typeof obj;
+  } : function (obj) {
+    return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+  }, module.exports.__esModule = true, module.exports["default"] = module.exports), _typeof(obj);
+}
+module.exports = _typeof, module.exports.__esModule = true, module.exports["default"] = module.exports;
+},{}],6:[function(require,module,exports){
 'use strict';
 
 /**
@@ -161,77 +234,7 @@ if (typeof module === 'object' && module.exports) {
     module.exports = polyline;
 }
 
-},{}],2:[function(require,module,exports){
-'use strict';
-var isObj = require('is-obj');
-var hasOwnProperty = Object.prototype.hasOwnProperty;
-var propIsEnumerable = Object.prototype.propertyIsEnumerable;
-
-function toObject(val) {
-	if (val === null || val === undefined) {
-		throw new TypeError('Sources cannot be null or undefined');
-	}
-
-	return Object(val);
-}
-
-function assignKey(to, from, key) {
-	var val = from[key];
-
-	if (val === undefined || val === null) {
-		return;
-	}
-
-	if (hasOwnProperty.call(to, key)) {
-		if (to[key] === undefined || to[key] === null) {
-			throw new TypeError('Cannot convert undefined or null to object (' + key + ')');
-		}
-	}
-
-	if (!hasOwnProperty.call(to, key) || !isObj(val)) {
-		to[key] = val;
-	} else {
-		to[key] = assign(Object(to[key]), from[key]);
-	}
-}
-
-function assign(to, from) {
-	if (to === from) {
-		return to;
-	}
-
-	from = Object(from);
-
-	for (var key in from) {
-		if (hasOwnProperty.call(from, key)) {
-			assignKey(to, from, key);
-		}
-	}
-
-	if (Object.getOwnPropertySymbols) {
-		var symbols = Object.getOwnPropertySymbols(from);
-
-		for (var i = 0; i < symbols.length; i++) {
-			if (propIsEnumerable.call(from, symbols[i])) {
-				assignKey(to, from, symbols[i]);
-			}
-		}
-	}
-
-	return to;
-}
-
-module.exports = function deepAssign(target) {
-	target = toObject(target);
-
-	for (var s = 1; s < arguments.length; s++) {
-		assign(target, arguments[s]);
-	}
-
-	return target;
-};
-
-},{"is-obj":5}],3:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -253,289 +256,484 @@ module.exports = function deepAssign(target) {
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+'use strict';
+
+var R = typeof Reflect === 'object' ? Reflect : null
+var ReflectApply = R && typeof R.apply === 'function'
+  ? R.apply
+  : function ReflectApply(target, receiver, args) {
+    return Function.prototype.apply.call(target, receiver, args);
+  }
+
+var ReflectOwnKeys
+if (R && typeof R.ownKeys === 'function') {
+  ReflectOwnKeys = R.ownKeys
+} else if (Object.getOwnPropertySymbols) {
+  ReflectOwnKeys = function ReflectOwnKeys(target) {
+    return Object.getOwnPropertyNames(target)
+      .concat(Object.getOwnPropertySymbols(target));
+  };
+} else {
+  ReflectOwnKeys = function ReflectOwnKeys(target) {
+    return Object.getOwnPropertyNames(target);
+  };
+}
+
+function ProcessEmitWarning(warning) {
+  if (console && console.warn) console.warn(warning);
+}
+
+var NumberIsNaN = Number.isNaN || function NumberIsNaN(value) {
+  return value !== value;
+}
+
 function EventEmitter() {
-  this._events = this._events || {};
-  this._maxListeners = this._maxListeners || undefined;
+  EventEmitter.init.call(this);
 }
 module.exports = EventEmitter;
+module.exports.once = once;
 
 // Backwards-compat with node 0.10.x
 EventEmitter.EventEmitter = EventEmitter;
 
 EventEmitter.prototype._events = undefined;
+EventEmitter.prototype._eventsCount = 0;
 EventEmitter.prototype._maxListeners = undefined;
 
 // By default EventEmitters will print a warning if more than 10 listeners are
 // added to it. This is a useful default which helps finding memory leaks.
-EventEmitter.defaultMaxListeners = 10;
+var defaultMaxListeners = 10;
+
+function checkListener(listener) {
+  if (typeof listener !== 'function') {
+    throw new TypeError('The "listener" argument must be of type Function. Received type ' + typeof listener);
+  }
+}
+
+Object.defineProperty(EventEmitter, 'defaultMaxListeners', {
+  enumerable: true,
+  get: function() {
+    return defaultMaxListeners;
+  },
+  set: function(arg) {
+    if (typeof arg !== 'number' || arg < 0 || NumberIsNaN(arg)) {
+      throw new RangeError('The value of "defaultMaxListeners" is out of range. It must be a non-negative number. Received ' + arg + '.');
+    }
+    defaultMaxListeners = arg;
+  }
+});
+
+EventEmitter.init = function() {
+
+  if (this._events === undefined ||
+      this._events === Object.getPrototypeOf(this)._events) {
+    this._events = Object.create(null);
+    this._eventsCount = 0;
+  }
+
+  this._maxListeners = this._maxListeners || undefined;
+};
 
 // Obviously not all Emitters should be limited to 10. This function allows
 // that to be increased. Set to zero for unlimited.
-EventEmitter.prototype.setMaxListeners = function(n) {
-  if (!isNumber(n) || n < 0 || isNaN(n))
-    throw TypeError('n must be a positive number');
+EventEmitter.prototype.setMaxListeners = function setMaxListeners(n) {
+  if (typeof n !== 'number' || n < 0 || NumberIsNaN(n)) {
+    throw new RangeError('The value of "n" is out of range. It must be a non-negative number. Received ' + n + '.');
+  }
   this._maxListeners = n;
   return this;
 };
 
-EventEmitter.prototype.emit = function(type) {
-  var er, handler, len, args, i, listeners;
+function _getMaxListeners(that) {
+  if (that._maxListeners === undefined)
+    return EventEmitter.defaultMaxListeners;
+  return that._maxListeners;
+}
 
-  if (!this._events)
-    this._events = {};
+EventEmitter.prototype.getMaxListeners = function getMaxListeners() {
+  return _getMaxListeners(this);
+};
 
-  // If there is no 'error' event listener then throw.
-  if (type === 'error') {
-    if (!this._events.error ||
-        (isObject(this._events.error) && !this._events.error.length)) {
-      er = arguments[1];
-      if (er instanceof Error) {
-        throw er; // Unhandled 'error' event
-      } else {
-        // At least give some kind of context to the user
-        var err = new Error('Uncaught, unspecified "error" event. (' + er + ')');
-        err.context = er;
-        throw err;
-      }
-    }
-  }
+EventEmitter.prototype.emit = function emit(type) {
+  var args = [];
+  for (var i = 1; i < arguments.length; i++) args.push(arguments[i]);
+  var doError = (type === 'error');
 
-  handler = this._events[type];
-
-  if (isUndefined(handler))
+  var events = this._events;
+  if (events !== undefined)
+    doError = (doError && events.error === undefined);
+  else if (!doError)
     return false;
 
-  if (isFunction(handler)) {
-    switch (arguments.length) {
-      // fast cases
-      case 1:
-        handler.call(this);
-        break;
-      case 2:
-        handler.call(this, arguments[1]);
-        break;
-      case 3:
-        handler.call(this, arguments[1], arguments[2]);
-        break;
-      // slower
-      default:
-        args = Array.prototype.slice.call(arguments, 1);
-        handler.apply(this, args);
+  // If there is no 'error' event listener then throw.
+  if (doError) {
+    var er;
+    if (args.length > 0)
+      er = args[0];
+    if (er instanceof Error) {
+      // Note: The comments on the `throw` lines are intentional, they show
+      // up in Node's output if this results in an unhandled exception.
+      throw er; // Unhandled 'error' event
     }
-  } else if (isObject(handler)) {
-    args = Array.prototype.slice.call(arguments, 1);
-    listeners = handler.slice();
-    len = listeners.length;
-    for (i = 0; i < len; i++)
-      listeners[i].apply(this, args);
+    // At least give some kind of context to the user
+    var err = new Error('Unhandled error.' + (er ? ' (' + er.message + ')' : ''));
+    err.context = er;
+    throw err; // Unhandled 'error' event
+  }
+
+  var handler = events[type];
+
+  if (handler === undefined)
+    return false;
+
+  if (typeof handler === 'function') {
+    ReflectApply(handler, this, args);
+  } else {
+    var len = handler.length;
+    var listeners = arrayClone(handler, len);
+    for (var i = 0; i < len; ++i)
+      ReflectApply(listeners[i], this, args);
   }
 
   return true;
 };
 
-EventEmitter.prototype.addListener = function(type, listener) {
+function _addListener(target, type, listener, prepend) {
   var m;
+  var events;
+  var existing;
 
-  if (!isFunction(listener))
-    throw TypeError('listener must be a function');
+  checkListener(listener);
 
-  if (!this._events)
-    this._events = {};
+  events = target._events;
+  if (events === undefined) {
+    events = target._events = Object.create(null);
+    target._eventsCount = 0;
+  } else {
+    // To avoid recursion in the case that type === "newListener"! Before
+    // adding it to the listeners, first emit "newListener".
+    if (events.newListener !== undefined) {
+      target.emit('newListener', type,
+                  listener.listener ? listener.listener : listener);
 
-  // To avoid recursion in the case that type === "newListener"! Before
-  // adding it to the listeners, first emit "newListener".
-  if (this._events.newListener)
-    this.emit('newListener', type,
-              isFunction(listener.listener) ?
-              listener.listener : listener);
+      // Re-assign `events` because a newListener handler could have caused the
+      // this._events to be assigned to a new object
+      events = target._events;
+    }
+    existing = events[type];
+  }
 
-  if (!this._events[type])
+  if (existing === undefined) {
     // Optimize the case of one listener. Don't need the extra array object.
-    this._events[type] = listener;
-  else if (isObject(this._events[type]))
-    // If we've already got an array, just append.
-    this._events[type].push(listener);
-  else
-    // Adding the second element, need to change to array.
-    this._events[type] = [this._events[type], listener];
-
-  // Check for listener leak
-  if (isObject(this._events[type]) && !this._events[type].warned) {
-    if (!isUndefined(this._maxListeners)) {
-      m = this._maxListeners;
+    existing = events[type] = listener;
+    ++target._eventsCount;
+  } else {
+    if (typeof existing === 'function') {
+      // Adding the second element, need to change to array.
+      existing = events[type] =
+        prepend ? [listener, existing] : [existing, listener];
+      // If we've already got an array, just append.
+    } else if (prepend) {
+      existing.unshift(listener);
     } else {
-      m = EventEmitter.defaultMaxListeners;
+      existing.push(listener);
     }
 
-    if (m && m > 0 && this._events[type].length > m) {
-      this._events[type].warned = true;
-      console.error('(node) warning: possible EventEmitter memory ' +
-                    'leak detected. %d listeners added. ' +
-                    'Use emitter.setMaxListeners() to increase limit.',
-                    this._events[type].length);
-      if (typeof console.trace === 'function') {
-        // not supported in IE 10
-        console.trace();
-      }
+    // Check for listener leak
+    m = _getMaxListeners(target);
+    if (m > 0 && existing.length > m && !existing.warned) {
+      existing.warned = true;
+      // No error code for this since it is a Warning
+      // eslint-disable-next-line no-restricted-syntax
+      var w = new Error('Possible EventEmitter memory leak detected. ' +
+                          existing.length + ' ' + String(type) + ' listeners ' +
+                          'added. Use emitter.setMaxListeners() to ' +
+                          'increase limit');
+      w.name = 'MaxListenersExceededWarning';
+      w.emitter = target;
+      w.type = type;
+      w.count = existing.length;
+      ProcessEmitWarning(w);
     }
   }
 
-  return this;
+  return target;
+}
+
+EventEmitter.prototype.addListener = function addListener(type, listener) {
+  return _addListener(this, type, listener, false);
 };
 
 EventEmitter.prototype.on = EventEmitter.prototype.addListener;
 
-EventEmitter.prototype.once = function(type, listener) {
-  if (!isFunction(listener))
-    throw TypeError('listener must be a function');
+EventEmitter.prototype.prependListener =
+    function prependListener(type, listener) {
+      return _addListener(this, type, listener, true);
+    };
 
-  var fired = false;
-
-  function g() {
-    this.removeListener(type, g);
-
-    if (!fired) {
-      fired = true;
-      listener.apply(this, arguments);
-    }
-  }
-
-  g.listener = listener;
-  this.on(type, g);
-
-  return this;
-};
-
-// emits a 'removeListener' event iff the listener was removed
-EventEmitter.prototype.removeListener = function(type, listener) {
-  var list, position, length, i;
-
-  if (!isFunction(listener))
-    throw TypeError('listener must be a function');
-
-  if (!this._events || !this._events[type])
-    return this;
-
-  list = this._events[type];
-  length = list.length;
-  position = -1;
-
-  if (list === listener ||
-      (isFunction(list.listener) && list.listener === listener)) {
-    delete this._events[type];
-    if (this._events.removeListener)
-      this.emit('removeListener', type, listener);
-
-  } else if (isObject(list)) {
-    for (i = length; i-- > 0;) {
-      if (list[i] === listener ||
-          (list[i].listener && list[i].listener === listener)) {
-        position = i;
-        break;
-      }
-    }
-
-    if (position < 0)
-      return this;
-
-    if (list.length === 1) {
-      list.length = 0;
-      delete this._events[type];
-    } else {
-      list.splice(position, 1);
-    }
-
-    if (this._events.removeListener)
-      this.emit('removeListener', type, listener);
-  }
-
-  return this;
-};
-
-EventEmitter.prototype.removeAllListeners = function(type) {
-  var key, listeners;
-
-  if (!this._events)
-    return this;
-
-  // not listening for removeListener, no need to emit
-  if (!this._events.removeListener) {
+function onceWrapper() {
+  if (!this.fired) {
+    this.target.removeListener(this.type, this.wrapFn);
+    this.fired = true;
     if (arguments.length === 0)
-      this._events = {};
-    else if (this._events[type])
-      delete this._events[type];
-    return this;
+      return this.listener.call(this.target);
+    return this.listener.apply(this.target, arguments);
   }
+}
 
-  // emit removeListener for all listeners on all events
-  if (arguments.length === 0) {
-    for (key in this._events) {
-      if (key === 'removeListener') continue;
-      this.removeAllListeners(key);
-    }
-    this.removeAllListeners('removeListener');
-    this._events = {};
-    return this;
-  }
+function _onceWrap(target, type, listener) {
+  var state = { fired: false, wrapFn: undefined, target: target, type: type, listener: listener };
+  var wrapped = onceWrapper.bind(state);
+  wrapped.listener = listener;
+  state.wrapFn = wrapped;
+  return wrapped;
+}
 
-  listeners = this._events[type];
-
-  if (isFunction(listeners)) {
-    this.removeListener(type, listeners);
-  } else if (listeners) {
-    // LIFO order
-    while (listeners.length)
-      this.removeListener(type, listeners[listeners.length - 1]);
-  }
-  delete this._events[type];
-
+EventEmitter.prototype.once = function once(type, listener) {
+  checkListener(listener);
+  this.on(type, _onceWrap(this, type, listener));
   return this;
 };
 
-EventEmitter.prototype.listeners = function(type) {
-  var ret;
-  if (!this._events || !this._events[type])
-    ret = [];
-  else if (isFunction(this._events[type]))
-    ret = [this._events[type]];
-  else
-    ret = this._events[type].slice();
-  return ret;
+EventEmitter.prototype.prependOnceListener =
+    function prependOnceListener(type, listener) {
+      checkListener(listener);
+      this.prependListener(type, _onceWrap(this, type, listener));
+      return this;
+    };
+
+// Emits a 'removeListener' event if and only if the listener was removed.
+EventEmitter.prototype.removeListener =
+    function removeListener(type, listener) {
+      var list, events, position, i, originalListener;
+
+      checkListener(listener);
+
+      events = this._events;
+      if (events === undefined)
+        return this;
+
+      list = events[type];
+      if (list === undefined)
+        return this;
+
+      if (list === listener || list.listener === listener) {
+        if (--this._eventsCount === 0)
+          this._events = Object.create(null);
+        else {
+          delete events[type];
+          if (events.removeListener)
+            this.emit('removeListener', type, list.listener || listener);
+        }
+      } else if (typeof list !== 'function') {
+        position = -1;
+
+        for (i = list.length - 1; i >= 0; i--) {
+          if (list[i] === listener || list[i].listener === listener) {
+            originalListener = list[i].listener;
+            position = i;
+            break;
+          }
+        }
+
+        if (position < 0)
+          return this;
+
+        if (position === 0)
+          list.shift();
+        else {
+          spliceOne(list, position);
+        }
+
+        if (list.length === 1)
+          events[type] = list[0];
+
+        if (events.removeListener !== undefined)
+          this.emit('removeListener', type, originalListener || listener);
+      }
+
+      return this;
+    };
+
+EventEmitter.prototype.off = EventEmitter.prototype.removeListener;
+
+EventEmitter.prototype.removeAllListeners =
+    function removeAllListeners(type) {
+      var listeners, events, i;
+
+      events = this._events;
+      if (events === undefined)
+        return this;
+
+      // not listening for removeListener, no need to emit
+      if (events.removeListener === undefined) {
+        if (arguments.length === 0) {
+          this._events = Object.create(null);
+          this._eventsCount = 0;
+        } else if (events[type] !== undefined) {
+          if (--this._eventsCount === 0)
+            this._events = Object.create(null);
+          else
+            delete events[type];
+        }
+        return this;
+      }
+
+      // emit removeListener for all listeners on all events
+      if (arguments.length === 0) {
+        var keys = Object.keys(events);
+        var key;
+        for (i = 0; i < keys.length; ++i) {
+          key = keys[i];
+          if (key === 'removeListener') continue;
+          this.removeAllListeners(key);
+        }
+        this.removeAllListeners('removeListener');
+        this._events = Object.create(null);
+        this._eventsCount = 0;
+        return this;
+      }
+
+      listeners = events[type];
+
+      if (typeof listeners === 'function') {
+        this.removeListener(type, listeners);
+      } else if (listeners !== undefined) {
+        // LIFO order
+        for (i = listeners.length - 1; i >= 0; i--) {
+          this.removeListener(type, listeners[i]);
+        }
+      }
+
+      return this;
+    };
+
+function _listeners(target, type, unwrap) {
+  var events = target._events;
+
+  if (events === undefined)
+    return [];
+
+  var evlistener = events[type];
+  if (evlistener === undefined)
+    return [];
+
+  if (typeof evlistener === 'function')
+    return unwrap ? [evlistener.listener || evlistener] : [evlistener];
+
+  return unwrap ?
+    unwrapListeners(evlistener) : arrayClone(evlistener, evlistener.length);
+}
+
+EventEmitter.prototype.listeners = function listeners(type) {
+  return _listeners(this, type, true);
 };
 
-EventEmitter.prototype.listenerCount = function(type) {
-  if (this._events) {
-    var evlistener = this._events[type];
-
-    if (isFunction(evlistener))
-      return 1;
-    else if (evlistener)
-      return evlistener.length;
-  }
-  return 0;
+EventEmitter.prototype.rawListeners = function rawListeners(type) {
+  return _listeners(this, type, false);
 };
 
 EventEmitter.listenerCount = function(emitter, type) {
-  return emitter.listenerCount(type);
+  if (typeof emitter.listenerCount === 'function') {
+    return emitter.listenerCount(type);
+  } else {
+    return listenerCount.call(emitter, type);
+  }
 };
 
-function isFunction(arg) {
-  return typeof arg === 'function';
+EventEmitter.prototype.listenerCount = listenerCount;
+function listenerCount(type) {
+  var events = this._events;
+
+  if (events !== undefined) {
+    var evlistener = events[type];
+
+    if (typeof evlistener === 'function') {
+      return 1;
+    } else if (evlistener !== undefined) {
+      return evlistener.length;
+    }
+  }
+
+  return 0;
 }
 
-function isNumber(arg) {
-  return typeof arg === 'number';
+EventEmitter.prototype.eventNames = function eventNames() {
+  return this._eventsCount > 0 ? ReflectOwnKeys(this._events) : [];
+};
+
+function arrayClone(arr, n) {
+  var copy = new Array(n);
+  for (var i = 0; i < n; ++i)
+    copy[i] = arr[i];
+  return copy;
 }
 
-function isObject(arg) {
-  return typeof arg === 'object' && arg !== null;
+function spliceOne(list, index) {
+  for (; index + 1 < list.length; index++)
+    list[index] = list[index + 1];
+  list.pop();
 }
 
-function isUndefined(arg) {
-  return arg === void 0;
+function unwrapListeners(arr) {
+  var ret = new Array(arr.length);
+  for (var i = 0; i < ret.length; ++i) {
+    ret[i] = arr[i].listener || arr[i];
+  }
+  return ret;
 }
 
-},{}],4:[function(require,module,exports){
+function once(emitter, name) {
+  return new Promise(function (resolve, reject) {
+    function errorListener(err) {
+      emitter.removeListener(name, resolver);
+      reject(err);
+    }
+
+    function resolver() {
+      if (typeof emitter.removeListener === 'function') {
+        emitter.removeListener('error', errorListener);
+      }
+      resolve([].slice.call(arguments));
+    };
+
+    eventTargetAgnosticAddListener(emitter, name, resolver, { once: true });
+    if (name !== 'error') {
+      addErrorHandlerIfEventEmitter(emitter, errorListener, { once: true });
+    }
+  });
+}
+
+function addErrorHandlerIfEventEmitter(emitter, handler, flags) {
+  if (typeof emitter.on === 'function') {
+    eventTargetAgnosticAddListener(emitter, 'error', handler, flags);
+  }
+}
+
+function eventTargetAgnosticAddListener(emitter, name, listener, flags) {
+  if (typeof emitter.on === 'function') {
+    if (flags.once) {
+      emitter.once(name, listener);
+    } else {
+      emitter.on(name, listener);
+    }
+  } else if (typeof emitter.addEventListener === 'function') {
+    // EventTarget does not have `error` event semantics like Node
+    // EventEmitters, we do not listen for `error` events here.
+    emitter.addEventListener(name, function wrapListener(arg) {
+      // IE does not have builtin `{ once: true }` support so we
+      // have to do it manually.
+      if (flags.once) {
+        emitter.removeEventListener(name, wrapListener);
+      }
+      listener(arg);
+    });
+  } else {
+    throw new TypeError('The "emitter" argument must be of type EventEmitter. Received type ' + typeof emitter);
+  }
+}
+
+},{}],8:[function(require,module,exports){
 /*
  * Fuzzy
  * https://github.com/myork/fuzzy
@@ -681,14 +879,7 @@ fuzzy.filter = function(pattern, arr, opts) {
 }());
 
 
-},{}],5:[function(require,module,exports){
-'use strict';
-module.exports = function (x) {
-	var type = typeof x;
-	return x !== null && (type === 'object' || type === 'function');
-};
-
-},{}],6:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 /**
  * lodash 3.0.0 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -703,8 +894,8 @@ var reInterpolate = /<%=([\s\S]+?)%>/g;
 
 module.exports = reInterpolate;
 
-},{}],7:[function(require,module,exports){
-(function (global){
+},{}],10:[function(require,module,exports){
+(function (global){(function (){
 /**
  * lodash (Custom Build) <https://lodash.com/>
  * Build: `lodash modularize exports="npm" -o ./`
@@ -1083,9 +1274,9 @@ function toNumber(value) {
 
 module.exports = debounce;
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],8:[function(require,module,exports){
-(function (global){
+}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],11:[function(require,module,exports){
+(function (global){(function (){
 /**
  * Lodash (Custom Build) <https://lodash.com/>
  * Build: `lodash modularize exports="npm" -o ./`
@@ -2935,9 +3126,9 @@ function stubFalse() {
 
 module.exports = isEqual;
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],9:[function(require,module,exports){
-(function (global){
+}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],12:[function(require,module,exports){
+(function (global){(function (){
 /**
  * Lodash (Custom Build) <https://lodash.com/>
  * Build: `lodash modularize exports="npm" -o ./`
@@ -4594,13 +4785,13 @@ function stubFalse() {
 
 module.exports = template;
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"lodash._reinterpolate":6,"lodash.templatesettings":10}],10:[function(require,module,exports){
-(function (global){
+}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"lodash._reinterpolate":9,"lodash.templatesettings":13}],13:[function(require,module,exports){
+(function (global){(function (){
 /**
- * Lodash (Custom Build) <https://lodash.com/>
+ * lodash (Custom Build) <https://lodash.com/>
  * Build: `lodash modularize exports="npm" -o ./`
- * Copyright OpenJS Foundation and other contributors <https://openjsf.org/>
+ * Copyright jQuery Foundation and other contributors <https://jquery.org/>
  * Released under MIT license <https://lodash.com/license>
  * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
  * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -4611,12 +4802,10 @@ var reInterpolate = require('lodash._reinterpolate');
 var INFINITY = 1 / 0;
 
 /** `Object#toString` result references. */
-var nullTag = '[object Null]',
-    symbolTag = '[object Symbol]',
-    undefinedTag = '[object Undefined]';
+var symbolTag = '[object Symbol]';
 
 /** Used to match HTML entities and HTML characters. */
-var reUnescapedHtml = /[&<>"']/g,
+var reUnescapedHtml = /[&<>"'`]/g,
     reHasUnescapedHtml = RegExp(reUnescapedHtml.source);
 
 /** Used to match template delimiters. */
@@ -4629,7 +4818,8 @@ var htmlEscapes = {
   '<': '&lt;',
   '>': '&gt;',
   '"': '&quot;',
-  "'": '&#39;'
+  "'": '&#39;',
+  '`': '&#96;'
 };
 
 /** Detect free variable `global` from Node.js. */
@@ -4640,26 +4830,6 @@ var freeSelf = typeof self == 'object' && self && self.Object === Object && self
 
 /** Used as a reference to the global object. */
 var root = freeGlobal || freeSelf || Function('return this')();
-
-/**
- * A specialized version of `_.map` for arrays without support for iteratee
- * shorthands.
- *
- * @private
- * @param {Array} [array] The array to iterate over.
- * @param {Function} iteratee The function invoked per iteration.
- * @returns {Array} Returns the new mapped array.
- */
-function arrayMap(array, iteratee) {
-  var index = -1,
-      length = array == null ? 0 : array.length,
-      result = Array(length);
-
-  while (++index < length) {
-    result[index] = iteratee(array[index], index, array);
-  }
-  return result;
-}
 
 /**
  * The base implementation of `_.propertyOf` without support for deep paths.
@@ -4686,19 +4856,15 @@ var escapeHtmlChar = basePropertyOf(htmlEscapes);
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
 
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
 /**
  * Used to resolve the
- * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+ * [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
  * of values.
  */
-var nativeObjectToString = objectProto.toString;
+var objectToString = objectProto.toString;
 
 /** Built-in value references. */
-var Symbol = root.Symbol,
-    symToStringTag = Symbol ? Symbol.toStringTag : undefined;
+var Symbol = root.Symbol;
 
 /** Used to convert symbols to primitives and strings. */
 var symbolProto = Symbol ? Symbol.prototype : undefined,
@@ -4706,8 +4872,8 @@ var symbolProto = Symbol ? Symbol.prototype : undefined,
 
 /**
  * By default, the template delimiters used by lodash are like those in
- * embedded Ruby (ERB) as well as ES2015 template strings. Change the
- * following template settings to use alternative delimiters.
+ * embedded Ruby (ERB). Change the following template settings to use
+ * alternative delimiters.
  *
  * @static
  * @memberOf _
@@ -4766,22 +4932,6 @@ var templateSettings = {
 };
 
 /**
- * The base implementation of `getTag` without fallbacks for buggy environments.
- *
- * @private
- * @param {*} value The value to query.
- * @returns {string} Returns the `toStringTag`.
- */
-function baseGetTag(value) {
-  if (value == null) {
-    return value === undefined ? undefinedTag : nullTag;
-  }
-  return (symToStringTag && symToStringTag in Object(value))
-    ? getRawTag(value)
-    : objectToString(value);
-}
-
-/**
  * The base implementation of `_.toString` which doesn't convert nullish
  * values to empty strings.
  *
@@ -4794,79 +4944,12 @@ function baseToString(value) {
   if (typeof value == 'string') {
     return value;
   }
-  if (isArray(value)) {
-    // Recursively convert values (susceptible to call stack limits).
-    return arrayMap(value, baseToString) + '';
-  }
   if (isSymbol(value)) {
     return symbolToString ? symbolToString.call(value) : '';
   }
   var result = (value + '');
   return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
 }
-
-/**
- * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
- *
- * @private
- * @param {*} value The value to query.
- * @returns {string} Returns the raw `toStringTag`.
- */
-function getRawTag(value) {
-  var isOwn = hasOwnProperty.call(value, symToStringTag),
-      tag = value[symToStringTag];
-
-  try {
-    value[symToStringTag] = undefined;
-    var unmasked = true;
-  } catch (e) {}
-
-  var result = nativeObjectToString.call(value);
-  if (unmasked) {
-    if (isOwn) {
-      value[symToStringTag] = tag;
-    } else {
-      delete value[symToStringTag];
-    }
-  }
-  return result;
-}
-
-/**
- * Converts `value` to a string using `Object.prototype.toString`.
- *
- * @private
- * @param {*} value The value to convert.
- * @returns {string} Returns the converted string.
- */
-function objectToString(value) {
-  return nativeObjectToString.call(value);
-}
-
-/**
- * Checks if `value` is classified as an `Array` object.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an array, else `false`.
- * @example
- *
- * _.isArray([1, 2, 3]);
- * // => true
- *
- * _.isArray(document.body.children);
- * // => false
- *
- * _.isArray('abc');
- * // => false
- *
- * _.isArray(_.noop);
- * // => false
- */
-var isArray = Array.isArray;
 
 /**
  * Checks if `value` is object-like. A value is object-like if it's not `null`
@@ -4893,7 +4976,7 @@ var isArray = Array.isArray;
  * // => false
  */
 function isObjectLike(value) {
-  return value != null && typeof value == 'object';
+  return !!value && typeof value == 'object';
 }
 
 /**
@@ -4915,7 +4998,7 @@ function isObjectLike(value) {
  */
 function isSymbol(value) {
   return typeof value == 'symbol' ||
-    (isObjectLike(value) && baseGetTag(value) == symbolTag);
+    (isObjectLike(value) && objectToString.call(value) == symbolTag);
 }
 
 /**
@@ -4926,8 +5009,8 @@ function isSymbol(value) {
  * @memberOf _
  * @since 4.0.0
  * @category Lang
- * @param {*} value The value to convert.
- * @returns {string} Returns the converted string.
+ * @param {*} value The value to process.
+ * @returns {string} Returns the string.
  * @example
  *
  * _.toString(null);
@@ -4944,8 +5027,8 @@ function toString(value) {
 }
 
 /**
- * Converts the characters "&", "<", ">", '"', and "'" in `string` to their
- * corresponding HTML entities.
+ * Converts the characters "&", "<", ">", '"', "'", and "\`" in `string` to
+ * their corresponding HTML entities.
  *
  * **Note:** No other characters are escaped. To escape additional
  * characters use a third-party library like [_he_](https://mths.be/he).
@@ -4955,6 +5038,12 @@ function toString(value) {
  * unless they're part of a tag or unquoted attribute value. See
  * [Mathias Bynens's article](https://mathiasbynens.be/notes/ambiguous-ampersands)
  * (under "semi-related fun fact") for more details.
+ *
+ * Backticks are escaped because in IE < 9, they can break out of
+ * attribute values or HTML comments. See [#59](https://html5sec.org/#59),
+ * [#102](https://html5sec.org/#102), [#108](https://html5sec.org/#108), and
+ * [#133](https://html5sec.org/#133) of the
+ * [HTML5 Security Cheatsheet](https://html5sec.org/) for more details.
  *
  * When working with HTML you should always
  * [quote attribute values](http://wonko.com/post/html-escaping) to reduce
@@ -4980,257 +5069,193 @@ function escape(string) {
 
 module.exports = templateSettings;
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"lodash._reinterpolate":6}],11:[function(require,module,exports){
-var root = require('./_root');
+}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"lodash._reinterpolate":9}],14:[function(require,module,exports){
+'use strict';
+const isOptionObject = require('is-plain-obj');
 
-/** Built-in value references. */
-var Symbol = root.Symbol;
+const {hasOwnProperty} = Object.prototype;
+const {propertyIsEnumerable} = Object;
+const defineProperty = (object, name, value) => Object.defineProperty(object, name, {
+	value,
+	writable: true,
+	enumerable: true,
+	configurable: true
+});
 
-module.exports = Symbol;
+const globalThis = this;
+const defaultMergeOptions = {
+	concatArrays: false,
+	ignoreUndefined: false
+};
 
-},{"./_root":18}],12:[function(require,module,exports){
-var Symbol = require('./_Symbol'),
-    getRawTag = require('./_getRawTag'),
-    objectToString = require('./_objectToString');
+const getEnumerableOwnPropertyKeys = value => {
+	const keys = [];
 
-/** `Object#toString` result references. */
-var nullTag = '[object Null]',
-    undefinedTag = '[object Undefined]';
+	for (const key in value) {
+		if (hasOwnProperty.call(value, key)) {
+			keys.push(key);
+		}
+	}
 
-/** Built-in value references. */
-var symToStringTag = Symbol ? Symbol.toStringTag : undefined;
+	/* istanbul ignore else  */
+	if (Object.getOwnPropertySymbols) {
+		const symbols = Object.getOwnPropertySymbols(value);
 
-/**
- * The base implementation of `getTag` without fallbacks for buggy environments.
- *
- * @private
- * @param {*} value The value to query.
- * @returns {string} Returns the `toStringTag`.
- */
-function baseGetTag(value) {
-  if (value == null) {
-    return value === undefined ? undefinedTag : nullTag;
-  }
-  return (symToStringTag && symToStringTag in Object(value))
-    ? getRawTag(value)
-    : objectToString(value);
+		for (const symbol of symbols) {
+			if (propertyIsEnumerable.call(value, symbol)) {
+				keys.push(symbol);
+			}
+		}
+	}
+
+	return keys;
+};
+
+function clone(value) {
+	if (Array.isArray(value)) {
+		return cloneArray(value);
+	}
+
+	if (isOptionObject(value)) {
+		return cloneOptionObject(value);
+	}
+
+	return value;
 }
 
-module.exports = baseGetTag;
+function cloneArray(array) {
+	const result = array.slice(0, 0);
 
-},{"./_Symbol":11,"./_getRawTag":15,"./_objectToString":16}],13:[function(require,module,exports){
-(function (global){
-/** Detect free variable `global` from Node.js. */
-var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
+	getEnumerableOwnPropertyKeys(array).forEach(key => {
+		defineProperty(result, key, clone(array[key]));
+	});
 
-module.exports = freeGlobal;
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],14:[function(require,module,exports){
-var overArg = require('./_overArg');
-
-/** Built-in value references. */
-var getPrototype = overArg(Object.getPrototypeOf, Object);
-
-module.exports = getPrototype;
-
-},{"./_overArg":17}],15:[function(require,module,exports){
-var Symbol = require('./_Symbol');
-
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * Used to resolve the
- * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
- * of values.
- */
-var nativeObjectToString = objectProto.toString;
-
-/** Built-in value references. */
-var symToStringTag = Symbol ? Symbol.toStringTag : undefined;
-
-/**
- * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
- *
- * @private
- * @param {*} value The value to query.
- * @returns {string} Returns the raw `toStringTag`.
- */
-function getRawTag(value) {
-  var isOwn = hasOwnProperty.call(value, symToStringTag),
-      tag = value[symToStringTag];
-
-  try {
-    value[symToStringTag] = undefined;
-    var unmasked = true;
-  } catch (e) {}
-
-  var result = nativeObjectToString.call(value);
-  if (unmasked) {
-    if (isOwn) {
-      value[symToStringTag] = tag;
-    } else {
-      delete value[symToStringTag];
-    }
-  }
-  return result;
+	return result;
 }
 
-module.exports = getRawTag;
+function cloneOptionObject(object) {
+	const result = Object.getPrototypeOf(object) === null ? Object.create(null) : {};
 
-},{"./_Symbol":11}],16:[function(require,module,exports){
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
+	getEnumerableOwnPropertyKeys(object).forEach(key => {
+		defineProperty(result, key, clone(object[key]));
+	});
 
-/**
- * Used to resolve the
- * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
- * of values.
- */
-var nativeObjectToString = objectProto.toString;
-
-/**
- * Converts `value` to a string using `Object.prototype.toString`.
- *
- * @private
- * @param {*} value The value to convert.
- * @returns {string} Returns the converted string.
- */
-function objectToString(value) {
-  return nativeObjectToString.call(value);
+	return result;
 }
 
-module.exports = objectToString;
-
-},{}],17:[function(require,module,exports){
 /**
- * Creates a unary function that invokes `func` with its argument transformed.
- *
- * @private
- * @param {Function} func The function to wrap.
- * @param {Function} transform The argument transform.
- * @returns {Function} Returns the new function.
+ * @param {*} merged already cloned
+ * @param {*} source something to merge
+ * @param {string[]} keys keys to merge
+ * @param {Object} config Config Object
+ * @returns {*} cloned Object
  */
-function overArg(func, transform) {
-  return function(arg) {
-    return func(transform(arg));
-  };
-}
+const mergeKeys = (merged, source, keys, config) => {
+	keys.forEach(key => {
+		if (typeof source[key] === 'undefined' && config.ignoreUndefined) {
+			return;
+		}
 
-module.exports = overArg;
+		// Do not recurse into prototype chain of merged
+		if (key in merged && merged[key] !== Object.getPrototypeOf(merged)) {
+			defineProperty(merged, key, merge(merged[key], source[key], config));
+		} else {
+			defineProperty(merged, key, clone(source[key]));
+		}
+	});
 
-},{}],18:[function(require,module,exports){
-var freeGlobal = require('./_freeGlobal');
-
-/** Detect free variable `self`. */
-var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
-
-/** Used as a reference to the global object. */
-var root = freeGlobal || freeSelf || Function('return this')();
-
-module.exports = root;
-
-},{"./_freeGlobal":13}],19:[function(require,module,exports){
-/**
- * Checks if `value` is object-like. A value is object-like if it's not `null`
- * and has a `typeof` result of "object".
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
- * @example
- *
- * _.isObjectLike({});
- * // => true
- *
- * _.isObjectLike([1, 2, 3]);
- * // => true
- *
- * _.isObjectLike(_.noop);
- * // => false
- *
- * _.isObjectLike(null);
- * // => false
- */
-function isObjectLike(value) {
-  return value != null && typeof value == 'object';
-}
-
-module.exports = isObjectLike;
-
-},{}],20:[function(require,module,exports){
-var baseGetTag = require('./_baseGetTag'),
-    getPrototype = require('./_getPrototype'),
-    isObjectLike = require('./isObjectLike');
-
-/** `Object#toString` result references. */
-var objectTag = '[object Object]';
-
-/** Used for built-in method references. */
-var funcProto = Function.prototype,
-    objectProto = Object.prototype;
-
-/** Used to resolve the decompiled source of functions. */
-var funcToString = funcProto.toString;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/** Used to infer the `Object` constructor. */
-var objectCtorString = funcToString.call(Object);
+	return merged;
+};
 
 /**
- * Checks if `value` is a plain object, that is, an object created by the
- * `Object` constructor or one with a `[[Prototype]]` of `null`.
+ * @param {*} merged already cloned
+ * @param {*} source something to merge
+ * @param {Object} config Config Object
+ * @returns {*} cloned Object
  *
- * @static
- * @memberOf _
- * @since 0.8.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a plain object, else `false`.
- * @example
- *
- * function Foo() {
- *   this.a = 1;
- * }
- *
- * _.isPlainObject(new Foo);
- * // => false
- *
- * _.isPlainObject([1, 2, 3]);
- * // => false
- *
- * _.isPlainObject({ 'x': 0, 'y': 0 });
- * // => true
- *
- * _.isPlainObject(Object.create(null));
- * // => true
+ * see [Array.prototype.concat ( ...arguments )](http://www.ecma-international.org/ecma-262/6.0/#sec-array.prototype.concat)
  */
-function isPlainObject(value) {
-  if (!isObjectLike(value) || baseGetTag(value) != objectTag) {
-    return false;
-  }
-  var proto = getPrototype(value);
-  if (proto === null) {
-    return true;
-  }
-  var Ctor = hasOwnProperty.call(proto, 'constructor') && proto.constructor;
-  return typeof Ctor == 'function' && Ctor instanceof Ctor &&
-    funcToString.call(Ctor) == objectCtorString;
+const concatArrays = (merged, source, config) => {
+	let result = merged.slice(0, 0);
+	let resultIndex = 0;
+
+	[merged, source].forEach(array => {
+		const indices = [];
+
+		// `result.concat(array)` with cloning
+		for (let k = 0; k < array.length; k++) {
+			if (!hasOwnProperty.call(array, k)) {
+				continue;
+			}
+
+			indices.push(String(k));
+
+			if (array === merged) {
+				// Already cloned
+				defineProperty(result, resultIndex++, array[k]);
+			} else {
+				defineProperty(result, resultIndex++, clone(array[k]));
+			}
+		}
+
+		// Merge non-index keys
+		result = mergeKeys(result, array, getEnumerableOwnPropertyKeys(array).filter(key => !indices.includes(key)), config);
+	});
+
+	return result;
+};
+
+/**
+ * @param {*} merged already cloned
+ * @param {*} source something to merge
+ * @param {Object} config Config Object
+ * @returns {*} cloned Object
+ */
+function merge(merged, source, config) {
+	if (config.concatArrays && Array.isArray(merged) && Array.isArray(source)) {
+		return concatArrays(merged, source, config);
+	}
+
+	if (!isOptionObject(source) || !isOptionObject(merged)) {
+		return clone(source);
+	}
+
+	return mergeKeys(merged, source, getEnumerableOwnPropertyKeys(source), config);
 }
 
-module.exports = isPlainObject;
+module.exports = function (...options) {
+	const config = merge(clone(defaultMergeOptions), (this !== globalThis && this) || {}, defaultMergeOptions);
+	let merged = {_: {}};
 
-},{"./_baseGetTag":12,"./_getPrototype":14,"./isObjectLike":19}],21:[function(require,module,exports){
+	for (const option of options) {
+		if (option === undefined) {
+			continue;
+		}
+
+		if (!isOptionObject(option)) {
+			throw new TypeError('`' + option + '` is not an Option Object');
+		}
+
+		merged = merge(merged, {_: option}, config);
+	}
+
+	return merged._;
+};
+
+},{"is-plain-obj":15}],15:[function(require,module,exports){
+'use strict';
+
+module.exports = value => {
+	if (Object.prototype.toString.call(value) !== '[object Object]') {
+		return false;
+	}
+
+	const prototype = Object.getPrototypeOf(value);
+	return prototype === null || prototype === Object.prototype;
+};
+
+},{}],16:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -5416,340 +5441,74 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],22:[function(require,module,exports){
-'use strict';
+},{}],17:[function(require,module,exports){
+"use strict";
 
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+/** A function that accepts a potential "extra argument" value to be injected later,
+ * and returns an instance of the thunk middleware that uses that value
+ */
 function createThunkMiddleware(extraArgument) {
-  return function (_ref) {
+  // Standard Redux middleware definition pattern:
+  // See: https://redux.js.org/tutorials/fundamentals/part-4-store#writing-custom-middleware
+  var middleware = function middleware(_ref) {
     var dispatch = _ref.dispatch,
         getState = _ref.getState;
     return function (next) {
       return function (action) {
+        // The thunk middleware looks for any functions that were passed to `store.dispatch`.
+        // If this "action" is really a function, call it and return the result.
         if (typeof action === 'function') {
+          // Inject the store's `dispatch` and `getState` methods, as well as any "extra arg"
           return action(dispatch, getState, extraArgument);
-        }
+        } // Otherwise, pass the action down the middleware chain as usual
+
 
         return next(action);
       };
     };
   };
+
+  return middleware;
 }
 
-var thunk = createThunkMiddleware();
+var thunk = createThunkMiddleware(); // Attach the factory function so users can create a customized version
+// with whatever "extra arg" they want to inject into their thunks
+
 thunk.withExtraArgument = createThunkMiddleware;
-
-exports['default'] = thunk;
-},{}],23:[function(require,module,exports){
+var _default = thunk;
+exports.default = _default;
+},{}],18:[function(require,module,exports){
+(function (process){(function (){
 'use strict';
 
-exports.__esModule = true;
+Object.defineProperty(exports, '__esModule', { value: true });
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+var _objectSpread = require('@babel/runtime/helpers/objectSpread2');
 
-exports['default'] = applyMiddleware;
+function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
-var _compose = require('./compose');
-
-var _compose2 = _interopRequireDefault(_compose);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+var _objectSpread__default = /*#__PURE__*/_interopDefaultLegacy(_objectSpread);
 
 /**
- * Creates a store enhancer that applies middleware to the dispatch method
- * of the Redux store. This is handy for a variety of tasks, such as expressing
- * asynchronous actions in a concise manner, or logging every action payload.
+ * Adapted from React: https://github.com/facebook/react/blob/master/packages/shared/formatProdErrorMessage.js
  *
- * See `redux-thunk` package as an example of the Redux middleware.
- *
- * Because middleware is potentially asynchronous, this should be the first
- * store enhancer in the composition chain.
- *
- * Note that each middleware will be given the `dispatch` and `getState` functions
- * as named arguments.
- *
- * @param {...Function} middlewares The middleware chain to be applied.
- * @returns {Function} A store enhancer applying the middleware.
+ * Do not require this module directly! Use normal throw error calls. These messages will be replaced with error codes
+ * during build.
+ * @param {number} code
  */
-function applyMiddleware() {
-  for (var _len = arguments.length, middlewares = Array(_len), _key = 0; _key < _len; _key++) {
-    middlewares[_key] = arguments[_key];
-  }
-
-  return function (createStore) {
-    return function (reducer, preloadedState, enhancer) {
-      var store = createStore(reducer, preloadedState, enhancer);
-      var _dispatch = store.dispatch;
-      var chain = [];
-
-      var middlewareAPI = {
-        getState: store.getState,
-        dispatch: function dispatch(action) {
-          return _dispatch(action);
-        }
-      };
-      chain = middlewares.map(function (middleware) {
-        return middleware(middlewareAPI);
-      });
-      _dispatch = _compose2['default'].apply(undefined, chain)(store.dispatch);
-
-      return _extends({}, store, {
-        dispatch: _dispatch
-      });
-    };
-  };
-}
-},{"./compose":26}],24:[function(require,module,exports){
-'use strict';
-
-exports.__esModule = true;
-exports['default'] = bindActionCreators;
-function bindActionCreator(actionCreator, dispatch) {
-  return function () {
-    return dispatch(actionCreator.apply(undefined, arguments));
-  };
+function formatProdErrorMessage(code) {
+  return "Minified Redux error #" + code + "; visit https://redux.js.org/Errors?code=" + code + " for the full message or " + 'use the non-minified dev environment for full errors. ';
 }
 
-/**
- * Turns an object whose values are action creators, into an object with the
- * same keys, but with every function wrapped into a `dispatch` call so they
- * may be invoked directly. This is just a convenience method, as you can call
- * `store.dispatch(MyActionCreators.doSomething())` yourself just fine.
- *
- * For convenience, you can also pass a single function as the first argument,
- * and get a function in return.
- *
- * @param {Function|Object} actionCreators An object whose values are action
- * creator functions. One handy way to obtain it is to use ES6 `import * as`
- * syntax. You may also pass a single function.
- *
- * @param {Function} dispatch The `dispatch` function available on your Redux
- * store.
- *
- * @returns {Function|Object} The object mimicking the original object, but with
- * every action creator wrapped into the `dispatch` call. If you passed a
- * function as `actionCreators`, the return value will also be a single
- * function.
- */
-function bindActionCreators(actionCreators, dispatch) {
-  if (typeof actionCreators === 'function') {
-    return bindActionCreator(actionCreators, dispatch);
-  }
-
-  if (typeof actionCreators !== 'object' || actionCreators === null) {
-    throw new Error('bindActionCreators expected an object or a function, instead received ' + (actionCreators === null ? 'null' : typeof actionCreators) + '. ' + 'Did you write "import ActionCreators from" instead of "import * as ActionCreators from"?');
-  }
-
-  var keys = Object.keys(actionCreators);
-  var boundActionCreators = {};
-  for (var i = 0; i < keys.length; i++) {
-    var key = keys[i];
-    var actionCreator = actionCreators[key];
-    if (typeof actionCreator === 'function') {
-      boundActionCreators[key] = bindActionCreator(actionCreator, dispatch);
-    }
-  }
-  return boundActionCreators;
-}
-},{}],25:[function(require,module,exports){
-(function (process){
-'use strict';
-
-exports.__esModule = true;
-exports['default'] = combineReducers;
-
-var _createStore = require('./createStore');
-
-var _isPlainObject = require('lodash/isPlainObject');
-
-var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
-
-var _warning = require('./utils/warning');
-
-var _warning2 = _interopRequireDefault(_warning);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function getUndefinedStateErrorMessage(key, action) {
-  var actionType = action && action.type;
-  var actionName = actionType && '"' + actionType.toString() + '"' || 'an action';
-
-  return 'Given action ' + actionName + ', reducer "' + key + '" returned undefined. ' + 'To ignore an action, you must explicitly return the previous state. ' + 'If you want this reducer to hold no value, you can return null instead of undefined.';
-}
-
-function getUnexpectedStateShapeWarningMessage(inputState, reducers, action, unexpectedKeyCache) {
-  var reducerKeys = Object.keys(reducers);
-  var argumentName = action && action.type === _createStore.ActionTypes.INIT ? 'preloadedState argument passed to createStore' : 'previous state received by the reducer';
-
-  if (reducerKeys.length === 0) {
-    return 'Store does not have a valid reducer. Make sure the argument passed ' + 'to combineReducers is an object whose values are reducers.';
-  }
-
-  if (!(0, _isPlainObject2['default'])(inputState)) {
-    return 'The ' + argumentName + ' has unexpected type of "' + {}.toString.call(inputState).match(/\s([a-z|A-Z]+)/)[1] + '". Expected argument to be an object with the following ' + ('keys: "' + reducerKeys.join('", "') + '"');
-  }
-
-  var unexpectedKeys = Object.keys(inputState).filter(function (key) {
-    return !reducers.hasOwnProperty(key) && !unexpectedKeyCache[key];
-  });
-
-  unexpectedKeys.forEach(function (key) {
-    unexpectedKeyCache[key] = true;
-  });
-
-  if (unexpectedKeys.length > 0) {
-    return 'Unexpected ' + (unexpectedKeys.length > 1 ? 'keys' : 'key') + ' ' + ('"' + unexpectedKeys.join('", "') + '" found in ' + argumentName + '. ') + 'Expected to find one of the known reducer keys instead: ' + ('"' + reducerKeys.join('", "') + '". Unexpected keys will be ignored.');
-  }
-}
-
-function assertReducerShape(reducers) {
-  Object.keys(reducers).forEach(function (key) {
-    var reducer = reducers[key];
-    var initialState = reducer(undefined, { type: _createStore.ActionTypes.INIT });
-
-    if (typeof initialState === 'undefined') {
-      throw new Error('Reducer "' + key + '" returned undefined during initialization. ' + 'If the state passed to the reducer is undefined, you must ' + 'explicitly return the initial state. The initial state may ' + 'not be undefined. If you don\'t want to set a value for this reducer, ' + 'you can use null instead of undefined.');
-    }
-
-    var type = '@@redux/PROBE_UNKNOWN_ACTION_' + Math.random().toString(36).substring(7).split('').join('.');
-    if (typeof reducer(undefined, { type: type }) === 'undefined') {
-      throw new Error('Reducer "' + key + '" returned undefined when probed with a random type. ' + ('Don\'t try to handle ' + _createStore.ActionTypes.INIT + ' or other actions in "redux/*" ') + 'namespace. They are considered private. Instead, you must return the ' + 'current state for any unknown actions, unless it is undefined, ' + 'in which case you must return the initial state, regardless of the ' + 'action type. The initial state may not be undefined, but can be null.');
-    }
-  });
-}
-
-/**
- * Turns an object whose values are different reducer functions, into a single
- * reducer function. It will call every child reducer, and gather their results
- * into a single state object, whose keys correspond to the keys of the passed
- * reducer functions.
- *
- * @param {Object} reducers An object whose values correspond to different
- * reducer functions that need to be combined into one. One handy way to obtain
- * it is to use ES6 `import * as reducers` syntax. The reducers may never return
- * undefined for any action. Instead, they should return their initial state
- * if the state passed to them was undefined, and the current state for any
- * unrecognized action.
- *
- * @returns {Function} A reducer function that invokes every reducer inside the
- * passed object, and builds a state object with the same shape.
- */
-function combineReducers(reducers) {
-  var reducerKeys = Object.keys(reducers);
-  var finalReducers = {};
-  for (var i = 0; i < reducerKeys.length; i++) {
-    var key = reducerKeys[i];
-
-    if (process.env.NODE_ENV !== 'production') {
-      if (typeof reducers[key] === 'undefined') {
-        (0, _warning2['default'])('No reducer provided for key "' + key + '"');
-      }
-    }
-
-    if (typeof reducers[key] === 'function') {
-      finalReducers[key] = reducers[key];
-    }
-  }
-  var finalReducerKeys = Object.keys(finalReducers);
-
-  var unexpectedKeyCache = void 0;
-  if (process.env.NODE_ENV !== 'production') {
-    unexpectedKeyCache = {};
-  }
-
-  var shapeAssertionError = void 0;
-  try {
-    assertReducerShape(finalReducers);
-  } catch (e) {
-    shapeAssertionError = e;
-  }
-
-  return function combination() {
-    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-    var action = arguments[1];
-
-    if (shapeAssertionError) {
-      throw shapeAssertionError;
-    }
-
-    if (process.env.NODE_ENV !== 'production') {
-      var warningMessage = getUnexpectedStateShapeWarningMessage(state, finalReducers, action, unexpectedKeyCache);
-      if (warningMessage) {
-        (0, _warning2['default'])(warningMessage);
-      }
-    }
-
-    var hasChanged = false;
-    var nextState = {};
-    for (var _i = 0; _i < finalReducerKeys.length; _i++) {
-      var _key = finalReducerKeys[_i];
-      var reducer = finalReducers[_key];
-      var previousStateForKey = state[_key];
-      var nextStateForKey = reducer(previousStateForKey, action);
-      if (typeof nextStateForKey === 'undefined') {
-        var errorMessage = getUndefinedStateErrorMessage(_key, action);
-        throw new Error(errorMessage);
-      }
-      nextState[_key] = nextStateForKey;
-      hasChanged = hasChanged || nextStateForKey !== previousStateForKey;
-    }
-    return hasChanged ? nextState : state;
-  };
-}
-}).call(this,require('_process'))
-},{"./createStore":27,"./utils/warning":29,"_process":21,"lodash/isPlainObject":20}],26:[function(require,module,exports){
-"use strict";
-
-exports.__esModule = true;
-exports["default"] = compose;
-/**
- * Composes single-argument functions from right to left. The rightmost
- * function can take multiple arguments as it provides the signature for
- * the resulting composite function.
- *
- * @param {...Function} funcs The functions to compose.
- * @returns {Function} A function obtained by composing the argument functions
- * from right to left. For example, compose(f, g, h) is identical to doing
- * (...args) => f(g(h(...args))).
- */
-
-function compose() {
-  for (var _len = arguments.length, funcs = Array(_len), _key = 0; _key < _len; _key++) {
-    funcs[_key] = arguments[_key];
-  }
-
-  if (funcs.length === 0) {
-    return function (arg) {
-      return arg;
-    };
-  }
-
-  if (funcs.length === 1) {
-    return funcs[0];
-  }
-
-  return funcs.reduce(function (a, b) {
-    return function () {
-      return a(b.apply(undefined, arguments));
-    };
-  });
-}
-},{}],27:[function(require,module,exports){
-'use strict';
-
-exports.__esModule = true;
-exports.ActionTypes = undefined;
-exports['default'] = createStore;
-
-var _isPlainObject = require('lodash/isPlainObject');
-
-var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
-
-var _symbolObservable = require('symbol-observable');
-
-var _symbolObservable2 = _interopRequireDefault(_symbolObservable);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+// Inlined version of the `symbol-observable` polyfill
+var $$observable = (function () {
+  return typeof Symbol === 'function' && Symbol.observable || '@@observable';
+})();
 
 /**
  * These are private action types reserved by Redux.
@@ -5757,36 +5516,124 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
  * If the current state is undefined, you must return the initial state.
  * Do not reference these action types directly in your code.
  */
-var ActionTypes = exports.ActionTypes = {
-  INIT: '@@redux/INIT'
+var randomString = function randomString() {
+  return Math.random().toString(36).substring(7).split('').join('.');
+};
 
-  /**
-   * Creates a Redux store that holds the state tree.
-   * The only way to change the data in the store is to call `dispatch()` on it.
-   *
-   * There should only be a single store in your app. To specify how different
-   * parts of the state tree respond to actions, you may combine several reducers
-   * into a single reducer function by using `combineReducers`.
-   *
-   * @param {Function} reducer A function that returns the next state tree, given
-   * the current state tree and the action to handle.
-   *
-   * @param {any} [preloadedState] The initial state. You may optionally specify it
-   * to hydrate the state from the server in universal apps, or to restore a
-   * previously serialized user session.
-   * If you use `combineReducers` to produce the root reducer function, this must be
-   * an object with the same shape as `combineReducers` keys.
-   *
-   * @param {Function} [enhancer] The store enhancer. You may optionally specify it
-   * to enhance the store with third-party capabilities such as middleware,
-   * time travel, persistence, etc. The only store enhancer that ships with Redux
-   * is `applyMiddleware()`.
-   *
-   * @returns {Store} A Redux store that lets you read the state, dispatch actions
-   * and subscribe to changes.
-   */
-};function createStore(reducer, preloadedState, enhancer) {
+var ActionTypes = {
+  INIT: "@@redux/INIT" + randomString(),
+  REPLACE: "@@redux/REPLACE" + randomString(),
+  PROBE_UNKNOWN_ACTION: function PROBE_UNKNOWN_ACTION() {
+    return "@@redux/PROBE_UNKNOWN_ACTION" + randomString();
+  }
+};
+
+/**
+ * @param {any} obj The object to inspect.
+ * @returns {boolean} True if the argument appears to be a plain object.
+ */
+function isPlainObject(obj) {
+  if (typeof obj !== 'object' || obj === null) return false;
+  var proto = obj;
+
+  while (Object.getPrototypeOf(proto) !== null) {
+    proto = Object.getPrototypeOf(proto);
+  }
+
+  return Object.getPrototypeOf(obj) === proto;
+}
+
+// Inlined / shortened version of `kindOf` from https://github.com/jonschlinkert/kind-of
+function miniKindOf(val) {
+  if (val === void 0) return 'undefined';
+  if (val === null) return 'null';
+  var type = typeof val;
+
+  switch (type) {
+    case 'boolean':
+    case 'string':
+    case 'number':
+    case 'symbol':
+    case 'function':
+      {
+        return type;
+      }
+  }
+
+  if (Array.isArray(val)) return 'array';
+  if (isDate(val)) return 'date';
+  if (isError(val)) return 'error';
+  var constructorName = ctorName(val);
+
+  switch (constructorName) {
+    case 'Symbol':
+    case 'Promise':
+    case 'WeakMap':
+    case 'WeakSet':
+    case 'Map':
+    case 'Set':
+      return constructorName;
+  } // other
+
+
+  return type.slice(8, -1).toLowerCase().replace(/\s/g, '');
+}
+
+function ctorName(val) {
+  return typeof val.constructor === 'function' ? val.constructor.name : null;
+}
+
+function isError(val) {
+  return val instanceof Error || typeof val.message === 'string' && val.constructor && typeof val.constructor.stackTraceLimit === 'number';
+}
+
+function isDate(val) {
+  if (val instanceof Date) return true;
+  return typeof val.toDateString === 'function' && typeof val.getDate === 'function' && typeof val.setDate === 'function';
+}
+
+function kindOf(val) {
+  var typeOfVal = typeof val;
+
+  if (process.env.NODE_ENV !== 'production') {
+    typeOfVal = miniKindOf(val);
+  }
+
+  return typeOfVal;
+}
+
+/**
+ * @deprecated
+ *
+ * **We recommend using the `configureStore` method
+ * of the `@reduxjs/toolkit` package**, which replaces `createStore`.
+ *
+ * Redux Toolkit is our recommended approach for writing Redux logic today,
+ * including store setup, reducers, data fetching, and more.
+ *
+ * **For more details, please read this Redux docs page:**
+ * **https://redux.js.org/introduction/why-rtk-is-redux-today**
+ *
+ * `configureStore` from Redux Toolkit is an improved version of `createStore` that
+ * simplifies setup and helps avoid common bugs.
+ *
+ * You should not be using the `redux` core package by itself today, except for learning purposes.
+ * The `createStore` method from the core `redux` package will not be removed, but we encourage
+ * all users to migrate to using Redux Toolkit for all Redux code.
+ *
+ * If you want to use `createStore` without this visual deprecation warning, use
+ * the `legacy_createStore` import instead:
+ *
+ * `import { legacy_createStore as createStore} from 'redux'`
+ *
+ */
+
+function createStore(reducer, preloadedState, enhancer) {
   var _ref2;
+
+  if (typeof preloadedState === 'function' && typeof enhancer === 'function' || typeof enhancer === 'function' && typeof arguments[3] === 'function') {
+    throw new Error(process.env.NODE_ENV === "production" ? formatProdErrorMessage(0) : 'It looks like you are passing several store enhancers to ' + 'createStore(). This is not supported. Instead, compose them ' + 'together to a single function. See https://redux.js.org/tutorials/fundamentals/part-4-store#creating-a-store-with-enhancers for an example.');
+  }
 
   if (typeof preloadedState === 'function' && typeof enhancer === 'undefined') {
     enhancer = preloadedState;
@@ -5795,14 +5642,14 @@ var ActionTypes = exports.ActionTypes = {
 
   if (typeof enhancer !== 'undefined') {
     if (typeof enhancer !== 'function') {
-      throw new Error('Expected the enhancer to be a function.');
+      throw new Error(process.env.NODE_ENV === "production" ? formatProdErrorMessage(1) : "Expected the enhancer to be a function. Instead, received: '" + kindOf(enhancer) + "'");
     }
 
     return enhancer(createStore)(reducer, preloadedState);
   }
 
   if (typeof reducer !== 'function') {
-    throw new Error('Expected the reducer to be a function.');
+    throw new Error(process.env.NODE_ENV === "production" ? formatProdErrorMessage(2) : "Expected the root reducer to be a function. Instead, received: '" + kindOf(reducer) + "'");
   }
 
   var currentReducer = reducer;
@@ -5810,22 +5657,33 @@ var ActionTypes = exports.ActionTypes = {
   var currentListeners = [];
   var nextListeners = currentListeners;
   var isDispatching = false;
+  /**
+   * This makes a shallow copy of currentListeners so we can use
+   * nextListeners as a temporary list while dispatching.
+   *
+   * This prevents any bugs around consumers calling
+   * subscribe/unsubscribe in the middle of a dispatch.
+   */
 
   function ensureCanMutateNextListeners() {
     if (nextListeners === currentListeners) {
       nextListeners = currentListeners.slice();
     }
   }
-
   /**
    * Reads the state tree managed by the store.
    *
    * @returns {any} The current state tree of your application.
    */
+
+
   function getState() {
+    if (isDispatching) {
+      throw new Error(process.env.NODE_ENV === "production" ? formatProdErrorMessage(3) : 'You may not call store.getState() while the reducer is executing. ' + 'The reducer has already received the state as an argument. ' + 'Pass it down from the top reducer instead of reading it from the store.');
+    }
+
     return currentState;
   }
-
   /**
    * Adds a change listener. It will be called any time an action is dispatched,
    * and some part of the state tree may potentially have changed. You may then
@@ -5849,29 +5707,36 @@ var ActionTypes = exports.ActionTypes = {
    * @param {Function} listener A callback to be invoked on every dispatch.
    * @returns {Function} A function to remove this change listener.
    */
+
+
   function subscribe(listener) {
     if (typeof listener !== 'function') {
-      throw new Error('Expected listener to be a function.');
+      throw new Error(process.env.NODE_ENV === "production" ? formatProdErrorMessage(4) : "Expected the listener to be a function. Instead, received: '" + kindOf(listener) + "'");
+    }
+
+    if (isDispatching) {
+      throw new Error(process.env.NODE_ENV === "production" ? formatProdErrorMessage(5) : 'You may not call store.subscribe() while the reducer is executing. ' + 'If you would like to be notified after the store has been updated, subscribe from a ' + 'component and invoke store.getState() in the callback to access the latest state. ' + 'See https://redux.js.org/api/store#subscribelistener for more details.');
     }
 
     var isSubscribed = true;
-
     ensureCanMutateNextListeners();
     nextListeners.push(listener);
-
     return function unsubscribe() {
       if (!isSubscribed) {
         return;
       }
 
-      isSubscribed = false;
+      if (isDispatching) {
+        throw new Error(process.env.NODE_ENV === "production" ? formatProdErrorMessage(6) : 'You may not unsubscribe from a store listener while the reducer is executing. ' + 'See https://redux.js.org/api/store#subscribelistener for more details.');
+      }
 
+      isSubscribed = false;
       ensureCanMutateNextListeners();
       var index = nextListeners.indexOf(listener);
       nextListeners.splice(index, 1);
+      currentListeners = null;
     };
   }
-
   /**
    * Dispatches an action. It is the only way to trigger a state change.
    *
@@ -5897,17 +5762,19 @@ var ActionTypes = exports.ActionTypes = {
    * Note that, if you use a custom middleware, it may wrap `dispatch()` to
    * return something else (for example, a Promise you can await).
    */
+
+
   function dispatch(action) {
-    if (!(0, _isPlainObject2['default'])(action)) {
-      throw new Error('Actions must be plain objects. ' + 'Use custom middleware for async actions.');
+    if (!isPlainObject(action)) {
+      throw new Error(process.env.NODE_ENV === "production" ? formatProdErrorMessage(7) : "Actions must be plain objects. Instead, the actual type was: '" + kindOf(action) + "'. You may need to add middleware to your store setup to handle dispatching other values, such as 'redux-thunk' to handle dispatching functions. See https://redux.js.org/tutorials/fundamentals/part-4-store#middleware and https://redux.js.org/tutorials/fundamentals/part-6-async-logic#using-the-redux-thunk-middleware for examples.");
     }
 
     if (typeof action.type === 'undefined') {
-      throw new Error('Actions may not have an undefined "type" property. ' + 'Have you misspelled a constant?');
+      throw new Error(process.env.NODE_ENV === "production" ? formatProdErrorMessage(8) : 'Actions may not have an undefined "type" property. You may have misspelled an action type string constant.');
     }
 
     if (isDispatching) {
-      throw new Error('Reducers may not dispatch actions.');
+      throw new Error(process.env.NODE_ENV === "production" ? formatProdErrorMessage(9) : 'Reducers may not dispatch actions.');
     }
 
     try {
@@ -5918,6 +5785,7 @@ var ActionTypes = exports.ActionTypes = {
     }
 
     var listeners = currentListeners = nextListeners;
+
     for (var i = 0; i < listeners.length; i++) {
       var listener = listeners[i];
       listener();
@@ -5925,7 +5793,6 @@ var ActionTypes = exports.ActionTypes = {
 
     return action;
   }
-
   /**
    * Replaces the reducer currently used by the store to calculate the state.
    *
@@ -5936,21 +5803,30 @@ var ActionTypes = exports.ActionTypes = {
    * @param {Function} nextReducer The reducer for the store to use instead.
    * @returns {void}
    */
+
+
   function replaceReducer(nextReducer) {
     if (typeof nextReducer !== 'function') {
-      throw new Error('Expected the nextReducer to be a function.');
+      throw new Error(process.env.NODE_ENV === "production" ? formatProdErrorMessage(10) : "Expected the nextReducer to be a function. Instead, received: '" + kindOf(nextReducer));
     }
 
-    currentReducer = nextReducer;
-    dispatch({ type: ActionTypes.INIT });
-  }
+    currentReducer = nextReducer; // This action has a similiar effect to ActionTypes.INIT.
+    // Any reducers that existed in both the new and old rootReducer
+    // will receive the previous state. This effectively populates
+    // the new state tree with any relevant data from the old one.
 
+    dispatch({
+      type: ActionTypes.REPLACE
+    });
+  }
   /**
    * Interoperability point for observable/reactive libraries.
    * @returns {observable} A minimal observable of state changes.
    * For more information, see the observable proposal:
    * https://github.com/tc39/proposal-observable
    */
+
+
   function observable() {
     var _ref;
 
@@ -5965,8 +5841,8 @@ var ActionTypes = exports.ActionTypes = {
        * emission of values from the observable.
        */
       subscribe: function subscribe(observer) {
-        if (typeof observer !== 'object') {
-          throw new TypeError('Expected the observer to be an object.');
+        if (typeof observer !== 'object' || observer === null) {
+          throw new Error(process.env.NODE_ENV === "production" ? formatProdErrorMessage(11) : "Expected the observer to be an object. Instead, received: '" + kindOf(observer) + "'");
         }
 
         function observeState() {
@@ -5977,79 +5853,61 @@ var ActionTypes = exports.ActionTypes = {
 
         observeState();
         var unsubscribe = outerSubscribe(observeState);
-        return { unsubscribe: unsubscribe };
+        return {
+          unsubscribe: unsubscribe
+        };
       }
-    }, _ref[_symbolObservable2['default']] = function () {
+    }, _ref[$$observable] = function () {
       return this;
     }, _ref;
-  }
-
-  // When a store is created, an "INIT" action is dispatched so that every
+  } // When a store is created, an "INIT" action is dispatched so that every
   // reducer returns their initial state. This effectively populates
   // the initial state tree.
-  dispatch({ type: ActionTypes.INIT });
 
+
+  dispatch({
+    type: ActionTypes.INIT
+  });
   return _ref2 = {
     dispatch: dispatch,
     subscribe: subscribe,
     getState: getState,
     replaceReducer: replaceReducer
-  }, _ref2[_symbolObservable2['default']] = observable, _ref2;
+  }, _ref2[$$observable] = observable, _ref2;
 }
-},{"lodash/isPlainObject":20,"symbol-observable":33}],28:[function(require,module,exports){
-(function (process){
-'use strict';
+/**
+ * Creates a Redux store that holds the state tree.
+ *
+ * **We recommend using `configureStore` from the
+ * `@reduxjs/toolkit` package**, which replaces `createStore`:
+ * **https://redux.js.org/introduction/why-rtk-is-redux-today**
+ *
+ * The only way to change the data in the store is to call `dispatch()` on it.
+ *
+ * There should only be a single store in your app. To specify how different
+ * parts of the state tree respond to actions, you may combine several reducers
+ * into a single reducer function by using `combineReducers`.
+ *
+ * @param {Function} reducer A function that returns the next state tree, given
+ * the current state tree and the action to handle.
+ *
+ * @param {any} [preloadedState] The initial state. You may optionally specify it
+ * to hydrate the state from the server in universal apps, or to restore a
+ * previously serialized user session.
+ * If you use `combineReducers` to produce the root reducer function, this must be
+ * an object with the same shape as `combineReducers` keys.
+ *
+ * @param {Function} [enhancer] The store enhancer. You may optionally specify it
+ * to enhance the store with third-party capabilities such as middleware,
+ * time travel, persistence, etc. The only store enhancer that ships with Redux
+ * is `applyMiddleware()`.
+ *
+ * @returns {Store} A Redux store that lets you read the state, dispatch actions
+ * and subscribe to changes.
+ */
 
-exports.__esModule = true;
-exports.compose = exports.applyMiddleware = exports.bindActionCreators = exports.combineReducers = exports.createStore = undefined;
+var legacy_createStore = createStore;
 
-var _createStore = require('./createStore');
-
-var _createStore2 = _interopRequireDefault(_createStore);
-
-var _combineReducers = require('./combineReducers');
-
-var _combineReducers2 = _interopRequireDefault(_combineReducers);
-
-var _bindActionCreators = require('./bindActionCreators');
-
-var _bindActionCreators2 = _interopRequireDefault(_bindActionCreators);
-
-var _applyMiddleware = require('./applyMiddleware');
-
-var _applyMiddleware2 = _interopRequireDefault(_applyMiddleware);
-
-var _compose = require('./compose');
-
-var _compose2 = _interopRequireDefault(_compose);
-
-var _warning = require('./utils/warning');
-
-var _warning2 = _interopRequireDefault(_warning);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-/*
-* This is a dummy function to check if the function name has been altered by minification.
-* If the function has been minified and NODE_ENV !== 'production', warn the user.
-*/
-function isCrushed() {}
-
-if (process.env.NODE_ENV !== 'production' && typeof isCrushed.name === 'string' && isCrushed.name !== 'isCrushed') {
-  (0, _warning2['default'])('You are currently using minified code outside of NODE_ENV === \'production\'. ' + 'This means that you are running a slower development build of Redux. ' + 'You can use loose-envify (https://github.com/zertosh/loose-envify) for browserify ' + 'or DefinePlugin for webpack (http://stackoverflow.com/questions/30030031) ' + 'to ensure you have the correct code for your production build.');
-}
-
-exports.createStore = _createStore2['default'];
-exports.combineReducers = _combineReducers2['default'];
-exports.bindActionCreators = _bindActionCreators2['default'];
-exports.applyMiddleware = _applyMiddleware2['default'];
-exports.compose = _compose2['default'];
-}).call(this,require('_process'))
-},{"./applyMiddleware":23,"./bindActionCreators":24,"./combineReducers":25,"./compose":26,"./createStore":27,"./utils/warning":29,"_process":21}],29:[function(require,module,exports){
-'use strict';
-
-exports.__esModule = true;
-exports['default'] = warning;
 /**
  * Prints a warning in the console if it exists.
  *
@@ -6062,16 +5920,303 @@ function warning(message) {
     console.error(message);
   }
   /* eslint-enable no-console */
+
+
   try {
     // This error was thrown as a convenience so that if you enable
     // "break on all exceptions" in your console,
     // it would pause the execution at this line.
     throw new Error(message);
-    /* eslint-disable no-empty */
-  } catch (e) {}
-  /* eslint-enable no-empty */
+  } catch (e) {} // eslint-disable-line no-empty
+
 }
-},{}],30:[function(require,module,exports){
+
+function getUnexpectedStateShapeWarningMessage(inputState, reducers, action, unexpectedKeyCache) {
+  var reducerKeys = Object.keys(reducers);
+  var argumentName = action && action.type === ActionTypes.INIT ? 'preloadedState argument passed to createStore' : 'previous state received by the reducer';
+
+  if (reducerKeys.length === 0) {
+    return 'Store does not have a valid reducer. Make sure the argument passed ' + 'to combineReducers is an object whose values are reducers.';
+  }
+
+  if (!isPlainObject(inputState)) {
+    return "The " + argumentName + " has unexpected type of \"" + kindOf(inputState) + "\". Expected argument to be an object with the following " + ("keys: \"" + reducerKeys.join('", "') + "\"");
+  }
+
+  var unexpectedKeys = Object.keys(inputState).filter(function (key) {
+    return !reducers.hasOwnProperty(key) && !unexpectedKeyCache[key];
+  });
+  unexpectedKeys.forEach(function (key) {
+    unexpectedKeyCache[key] = true;
+  });
+  if (action && action.type === ActionTypes.REPLACE) return;
+
+  if (unexpectedKeys.length > 0) {
+    return "Unexpected " + (unexpectedKeys.length > 1 ? 'keys' : 'key') + " " + ("\"" + unexpectedKeys.join('", "') + "\" found in " + argumentName + ". ") + "Expected to find one of the known reducer keys instead: " + ("\"" + reducerKeys.join('", "') + "\". Unexpected keys will be ignored.");
+  }
+}
+
+function assertReducerShape(reducers) {
+  Object.keys(reducers).forEach(function (key) {
+    var reducer = reducers[key];
+    var initialState = reducer(undefined, {
+      type: ActionTypes.INIT
+    });
+
+    if (typeof initialState === 'undefined') {
+      throw new Error(process.env.NODE_ENV === "production" ? formatProdErrorMessage(12) : "The slice reducer for key \"" + key + "\" returned undefined during initialization. " + "If the state passed to the reducer is undefined, you must " + "explicitly return the initial state. The initial state may " + "not be undefined. If you don't want to set a value for this reducer, " + "you can use null instead of undefined.");
+    }
+
+    if (typeof reducer(undefined, {
+      type: ActionTypes.PROBE_UNKNOWN_ACTION()
+    }) === 'undefined') {
+      throw new Error(process.env.NODE_ENV === "production" ? formatProdErrorMessage(13) : "The slice reducer for key \"" + key + "\" returned undefined when probed with a random type. " + ("Don't try to handle '" + ActionTypes.INIT + "' or other actions in \"redux/*\" ") + "namespace. They are considered private. Instead, you must return the " + "current state for any unknown actions, unless it is undefined, " + "in which case you must return the initial state, regardless of the " + "action type. The initial state may not be undefined, but can be null.");
+    }
+  });
+}
+/**
+ * Turns an object whose values are different reducer functions, into a single
+ * reducer function. It will call every child reducer, and gather their results
+ * into a single state object, whose keys correspond to the keys of the passed
+ * reducer functions.
+ *
+ * @param {Object} reducers An object whose values correspond to different
+ * reducer functions that need to be combined into one. One handy way to obtain
+ * it is to use ES6 `import * as reducers` syntax. The reducers may never return
+ * undefined for any action. Instead, they should return their initial state
+ * if the state passed to them was undefined, and the current state for any
+ * unrecognized action.
+ *
+ * @returns {Function} A reducer function that invokes every reducer inside the
+ * passed object, and builds a state object with the same shape.
+ */
+
+
+function combineReducers(reducers) {
+  var reducerKeys = Object.keys(reducers);
+  var finalReducers = {};
+
+  for (var i = 0; i < reducerKeys.length; i++) {
+    var key = reducerKeys[i];
+
+    if (process.env.NODE_ENV !== 'production') {
+      if (typeof reducers[key] === 'undefined') {
+        warning("No reducer provided for key \"" + key + "\"");
+      }
+    }
+
+    if (typeof reducers[key] === 'function') {
+      finalReducers[key] = reducers[key];
+    }
+  }
+
+  var finalReducerKeys = Object.keys(finalReducers); // This is used to make sure we don't warn about the same
+  // keys multiple times.
+
+  var unexpectedKeyCache;
+
+  if (process.env.NODE_ENV !== 'production') {
+    unexpectedKeyCache = {};
+  }
+
+  var shapeAssertionError;
+
+  try {
+    assertReducerShape(finalReducers);
+  } catch (e) {
+    shapeAssertionError = e;
+  }
+
+  return function combination(state, action) {
+    if (state === void 0) {
+      state = {};
+    }
+
+    if (shapeAssertionError) {
+      throw shapeAssertionError;
+    }
+
+    if (process.env.NODE_ENV !== 'production') {
+      var warningMessage = getUnexpectedStateShapeWarningMessage(state, finalReducers, action, unexpectedKeyCache);
+
+      if (warningMessage) {
+        warning(warningMessage);
+      }
+    }
+
+    var hasChanged = false;
+    var nextState = {};
+
+    for (var _i = 0; _i < finalReducerKeys.length; _i++) {
+      var _key = finalReducerKeys[_i];
+      var reducer = finalReducers[_key];
+      var previousStateForKey = state[_key];
+      var nextStateForKey = reducer(previousStateForKey, action);
+
+      if (typeof nextStateForKey === 'undefined') {
+        var actionType = action && action.type;
+        throw new Error(process.env.NODE_ENV === "production" ? formatProdErrorMessage(14) : "When called with an action of type " + (actionType ? "\"" + String(actionType) + "\"" : '(unknown type)') + ", the slice reducer for key \"" + _key + "\" returned undefined. " + "To ignore an action, you must explicitly return the previous state. " + "If you want this reducer to hold no value, you can return null instead of undefined.");
+      }
+
+      nextState[_key] = nextStateForKey;
+      hasChanged = hasChanged || nextStateForKey !== previousStateForKey;
+    }
+
+    hasChanged = hasChanged || finalReducerKeys.length !== Object.keys(state).length;
+    return hasChanged ? nextState : state;
+  };
+}
+
+function bindActionCreator(actionCreator, dispatch) {
+  return function () {
+    return dispatch(actionCreator.apply(this, arguments));
+  };
+}
+/**
+ * Turns an object whose values are action creators, into an object with the
+ * same keys, but with every function wrapped into a `dispatch` call so they
+ * may be invoked directly. This is just a convenience method, as you can call
+ * `store.dispatch(MyActionCreators.doSomething())` yourself just fine.
+ *
+ * For convenience, you can also pass an action creator as the first argument,
+ * and get a dispatch wrapped function in return.
+ *
+ * @param {Function|Object} actionCreators An object whose values are action
+ * creator functions. One handy way to obtain it is to use ES6 `import * as`
+ * syntax. You may also pass a single function.
+ *
+ * @param {Function} dispatch The `dispatch` function available on your Redux
+ * store.
+ *
+ * @returns {Function|Object} The object mimicking the original object, but with
+ * every action creator wrapped into the `dispatch` call. If you passed a
+ * function as `actionCreators`, the return value will also be a single
+ * function.
+ */
+
+
+function bindActionCreators(actionCreators, dispatch) {
+  if (typeof actionCreators === 'function') {
+    return bindActionCreator(actionCreators, dispatch);
+  }
+
+  if (typeof actionCreators !== 'object' || actionCreators === null) {
+    throw new Error(process.env.NODE_ENV === "production" ? formatProdErrorMessage(16) : "bindActionCreators expected an object or a function, but instead received: '" + kindOf(actionCreators) + "'. " + "Did you write \"import ActionCreators from\" instead of \"import * as ActionCreators from\"?");
+  }
+
+  var boundActionCreators = {};
+
+  for (var key in actionCreators) {
+    var actionCreator = actionCreators[key];
+
+    if (typeof actionCreator === 'function') {
+      boundActionCreators[key] = bindActionCreator(actionCreator, dispatch);
+    }
+  }
+
+  return boundActionCreators;
+}
+
+/**
+ * Composes single-argument functions from right to left. The rightmost
+ * function can take multiple arguments as it provides the signature for
+ * the resulting composite function.
+ *
+ * @param {...Function} funcs The functions to compose.
+ * @returns {Function} A function obtained by composing the argument functions
+ * from right to left. For example, compose(f, g, h) is identical to doing
+ * (...args) => f(g(h(...args))).
+ */
+function compose() {
+  for (var _len = arguments.length, funcs = new Array(_len), _key = 0; _key < _len; _key++) {
+    funcs[_key] = arguments[_key];
+  }
+
+  if (funcs.length === 0) {
+    return function (arg) {
+      return arg;
+    };
+  }
+
+  if (funcs.length === 1) {
+    return funcs[0];
+  }
+
+  return funcs.reduce(function (a, b) {
+    return function () {
+      return a(b.apply(void 0, arguments));
+    };
+  });
+}
+
+/**
+ * Creates a store enhancer that applies middleware to the dispatch method
+ * of the Redux store. This is handy for a variety of tasks, such as expressing
+ * asynchronous actions in a concise manner, or logging every action payload.
+ *
+ * See `redux-thunk` package as an example of the Redux middleware.
+ *
+ * Because middleware is potentially asynchronous, this should be the first
+ * store enhancer in the composition chain.
+ *
+ * Note that each middleware will be given the `dispatch` and `getState` functions
+ * as named arguments.
+ *
+ * @param {...Function} middlewares The middleware chain to be applied.
+ * @returns {Function} A store enhancer applying the middleware.
+ */
+
+function applyMiddleware() {
+  for (var _len = arguments.length, middlewares = new Array(_len), _key = 0; _key < _len; _key++) {
+    middlewares[_key] = arguments[_key];
+  }
+
+  return function (createStore) {
+    return function () {
+      var store = createStore.apply(void 0, arguments);
+
+      var _dispatch = function dispatch() {
+        throw new Error(process.env.NODE_ENV === "production" ? formatProdErrorMessage(15) : 'Dispatching while constructing your middleware is not allowed. ' + 'Other middleware would not be applied to this dispatch.');
+      };
+
+      var middlewareAPI = {
+        getState: store.getState,
+        dispatch: function dispatch() {
+          return _dispatch.apply(void 0, arguments);
+        }
+      };
+      var chain = middlewares.map(function (middleware) {
+        return middleware(middlewareAPI);
+      });
+      _dispatch = compose.apply(void 0, chain)(store.dispatch);
+      return _objectSpread__default['default'](_objectSpread__default['default']({}, store), {}, {
+        dispatch: _dispatch
+      });
+    };
+  };
+}
+
+/*
+ * This is a dummy function to check if the function name has been altered by minification.
+ * If the function has been minified and NODE_ENV !== 'production', warn the user.
+ */
+
+function isCrushed() {}
+
+if (process.env.NODE_ENV !== 'production' && typeof isCrushed.name === 'string' && isCrushed.name !== 'isCrushed') {
+  warning('You are currently using minified code outside of NODE_ENV === "production". ' + 'This means that you are running a slower development build of Redux. ' + 'You can use loose-envify (https://github.com/zertosh/loose-envify) for browserify ' + 'or setting mode to production in webpack (https://webpack.js.org/concepts/mode/) ' + 'to ensure you have the correct code for your production build.');
+}
+
+exports.__DO_NOT_USE__ActionTypes = ActionTypes;
+exports.applyMiddleware = applyMiddleware;
+exports.bindActionCreators = bindActionCreators;
+exports.combineReducers = combineReducers;
+exports.compose = compose;
+exports.createStore = createStore;
+exports.legacy_createStore = legacy_createStore;
+
+}).call(this)}).call(this,require('_process'))
+},{"@babel/runtime/helpers/objectSpread2":2,"_process":16}],19:[function(require,module,exports){
 'use strict';
 
 /**
@@ -6083,6 +6228,7 @@ function warning(message) {
  * @param {Object} options
  * @param {Number} [options.limit=5] Max number of results to display in the auto suggest list.
  * @param {Number} [options.minLength=2] Number of characters typed into an input to trigger suggestions.
+ * @param {Boolean} [options.hideOnBlur=true] If `true`, hides the suggestions when focus is lost.
  * @return {Suggestions} `this`
  * @example
  * // in the browser
@@ -6111,7 +6257,8 @@ function warning(message) {
  * var typeahead = new Suggestions(input, data, {
  *   filter: false, // Disable filtering
  *   minLength: 3, // Number of characters typed into an input to trigger suggestions.
- *   limit: 3 //  Max number of results to display.
+ *   limit: 3, //  Max number of results to display.
+ *   hideOnBlur: false // Don't hide results when input loses focus
  * });
  *
  * // As we're passing an object of an arrays as data, override
@@ -6128,24 +6275,31 @@ function warning(message) {
  * new Suggestions(input, data);
  */
 var Suggestions = require('./src/suggestions');
-window.Suggestions = module.exports = Suggestions;
+module.exports = Suggestions;
 
-},{"./src/suggestions":32}],31:[function(require,module,exports){
-'Use strict';
+if (typeof window !== 'undefined') {
+  window.Suggestions = Suggestions;
+}
+
+},{"./src/suggestions":21}],20:[function(require,module,exports){
+'use strict';
 
 var List = function(component) {
   this.component = component;
   this.items = [];
   this.active = 0;
+  this.wrapper = document.createElement('div');
+  this.wrapper.className = 'suggestions-wrapper';
   this.element = document.createElement('ul');
   this.element.className = 'suggestions';
+  this.wrapper.appendChild(this.element);
 
   // selectingListItem is set to true in the time between the mousedown and mouseup when clicking an item in the list
   // mousedown on a list item will cause the input to blur which normally hides the list, so this flag is used to keep
   // the list open until the mouseup
   this.selectingListItem = false;
 
-  component.el.parentNode.insertBefore(this.element, component.el.nextSibling);
+  component.el.parentNode.insertBefore(this.wrapper, component.el.nextSibling);
   return this;
 };
 
@@ -6168,6 +6322,10 @@ List.prototype.clear = function() {
 
 List.prototype.isEmpty = function() {
   return !this.items.length;
+};
+
+List.prototype.isVisible = function() {
+  return this.element.style.display === 'block';
 };
 
 List.prototype.draw = function() {
@@ -6225,9 +6383,18 @@ List.prototype.next = function() {
   this.move(this.active === this.items.length - 1 ? 0 : this.active + 1);
 };
 
+List.prototype.drawError = function(msg){
+  var li = document.createElement('li');
+
+  li.innerHTML = msg;
+
+  this.element.appendChild(li);
+  this.show();
+}
+
 module.exports = List;
 
-},{}],32:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 'use strict';
 
 var extend = require('xtend');
@@ -6240,7 +6407,8 @@ var Suggestions = function(el, data, options) {
   this.options = extend({
     minLength: 2,
     limit: 5,
-    filter: true
+    filter: true,
+    hideOnBlur: true
   }, options);
 
   this.el = el;
@@ -6272,6 +6440,11 @@ var Suggestions = function(el, data, options) {
     this.handlePaste(e);
   }.bind(this));
 
+  // use user-provided render function if given, otherwise just use the default
+  this.render = (this.options.render) ? this.options.render.bind(this) : this.render.bind(this)
+
+  this.getItemValue = (this.options.getItemValue) ? this.options.getItemValue.bind(this) : this.getItemValue.bind(this);
+
   return this;
 };
 
@@ -6294,9 +6467,11 @@ Suggestions.prototype.handleKeyUp = function(keyCode) {
 Suggestions.prototype.handleKeyDown = function(e) {
   switch (e.keyCode) {
     case 13: // ENTER
-    case 9:  // TAB
-      e.preventDefault();
+    case 9: // TAB
       if (!this.list.isEmpty()) {
+        if (this.list.isVisible()) {
+          e.preventDefault();
+        }
         this.value(this.list.items[this.list.active].original);
         this.list.hide();
       }
@@ -6314,7 +6489,7 @@ Suggestions.prototype.handleKeyDown = function(e) {
 };
 
 Suggestions.prototype.handleBlur = function() {
-  if (!this.list.selectingListItem) {
+  if (!this.list.selectingListItem && this.options.hideOnBlur) {
     this.list.hide();
   }
 };
@@ -6413,24 +6588,25 @@ Suggestions.prototype.getCandidates = function(callback) {
     post: '</strong>',
     extract: function(d) { return this.getItemValue(d); }.bind(this)
   };
+  var results;
+  if(this.options.filter){
+    results = fuzzy.filter(this.query, this.data, options);
 
-  var results = this.options.filter ?
-    fuzzy.filter(this.query, this.data, options) :
-    this.data.map(function(d) {
-      var boldString = this.getItemValue(d);
-      var indexString = this.normalize(boldString);
-      var indexOfQuery = indexString.lastIndexOf(this.query);
-      while(indexOfQuery > -1) {
-        var endIndexOfQuery = indexOfQuery + this.query.length;
-        boldString = boldString.slice(0, indexOfQuery) + '<strong>' + boldString.slice(indexOfQuery, endIndexOfQuery) + '</strong>' + boldString.slice(endIndexOfQuery);
-        indexOfQuery = indexString.slice(0, indexOfQuery).lastIndexOf(this.query);
-      }
+    results = results.map(function(item){
+      return {
+        original: item.original,
+        string: this.render(item.original, item.string)
+      };
+    }.bind(this))
+  }else{
+    results = this.data.map(function(d) {
+      var renderedString = this.render(d);
       return {
         original: d,
-        string: boldString
+        string: renderedString
       };
     }.bind(this));
-
+  }
   callback(results);
 };
 
@@ -6444,65 +6620,39 @@ Suggestions.prototype.getItemValue = function(item) {
   return item;
 };
 
-module.exports = Suggestions;
-
-},{"./list":31,"fuzzy":4,"xtend":37}],33:[function(require,module,exports){
-(function (global){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _ponyfill = require('./ponyfill.js');
-
-var _ponyfill2 = _interopRequireDefault(_ponyfill);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var root; /* global window */
-
-
-if (typeof self !== 'undefined') {
-  root = self;
-} else if (typeof window !== 'undefined') {
-  root = window;
-} else if (typeof global !== 'undefined') {
-  root = global;
-} else if (typeof module !== 'undefined') {
-  root = module;
-} else {
-  root = Function('return this')();
+/**
+ * For a given item in the data array, return a string of html that should be rendered in the dropdown
+ * @param {Object|String} item an item from the data array
+ * @param {String} sourceFormatting a string that has pre-formatted html that should be passed directly through the render function 
+ * @return {String} html
+ */
+Suggestions.prototype.render = function(item, sourceFormatting) {
+  if (sourceFormatting){
+    // use existing formatting on the source string
+    return sourceFormatting;
+  }
+  var boldString = (item.original) ? this.getItemValue(item.original) : this.getItemValue(item);
+  var indexString = this.normalize(boldString);
+  var indexOfQuery = indexString.lastIndexOf(this.query);
+  while (indexOfQuery > -1) {
+    var endIndexOfQuery = indexOfQuery + this.query.length;
+    boldString = boldString.slice(0, indexOfQuery) + '<strong>' + boldString.slice(indexOfQuery, endIndexOfQuery) + '</strong>' + boldString.slice(endIndexOfQuery);
+    indexOfQuery = indexString.slice(0, indexOfQuery).lastIndexOf(this.query);
+  }
+  return boldString
 }
 
-var result = (0, _ponyfill2['default'])(root);
-exports['default'] = result;
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./ponyfill.js":34}],34:[function(require,module,exports){
-'use strict';
+/**
+ * Render an custom error message in the suggestions list
+ * @param {String} msg An html string to render as an error message
+ */
+Suggestions.prototype.renderError = function(msg){
+  this.list.drawError(msg);
+}
 
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports['default'] = symbolObservablePonyfill;
-function symbolObservablePonyfill(root) {
-	var result;
-	var _Symbol = root.Symbol;
+module.exports = Suggestions;
 
-	if (typeof _Symbol === 'function') {
-		if (_Symbol.observable) {
-			result = _Symbol.observable;
-		} else {
-			result = _Symbol('observable');
-			_Symbol.observable = result;
-		}
-	} else {
-		result = '@@observable';
-	}
-
-	return result;
-};
-},{}],35:[function(require,module,exports){
+},{"./list":20,"fuzzy":8,"xtend":24}],22:[function(require,module,exports){
 var each = require('turf-meta').coordEach;
 
 /**
@@ -6572,7 +6722,7 @@ module.exports = function(layer) {
     return extent;
 };
 
-},{"turf-meta":36}],36:[function(require,module,exports){
+},{"turf-meta":23}],23:[function(require,module,exports){
 /**
  * Lazily iterate over coordinates in any GeoJSON object, similar to
  * Array.forEach.
@@ -6712,7 +6862,7 @@ function propReduce(layer, callback, memo) {
 }
 module.exports.propReduce = propReduce;
 
-},{}],37:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 module.exports = extend
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -6733,112 +6883,117 @@ function extend() {
     return target
 }
 
-},{}],38:[function(require,module,exports){
-'use strict';
+},{}],25:[function(require,module,exports){
+"use strict";
 
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.queryOrigin = queryOrigin;
-exports.queryDestination = queryDestination;
-exports.queryOriginCoordinates = queryOriginCoordinates;
-exports.queryDestinationCoordinates = queryDestinationCoordinates;
-exports.clearOrigin = clearOrigin;
-exports.clearDestination = clearDestination;
-exports.setOptions = setOptions;
-exports.hoverMarker = hoverMarker;
-exports.setRouteIndex = setRouteIndex;
-exports.createOrigin = createOrigin;
-exports.createDestination = createDestination;
-exports.setProfile = setProfile;
-exports.reverse = reverse;
-exports.setOriginFromCoordinates = setOriginFromCoordinates;
-exports.setDestinationFromCoordinates = setDestinationFromCoordinates;
 exports.addWaypoint = addWaypoint;
-exports.setWaypoint = setWaypoint;
-exports.removeWaypoint = removeWaypoint;
-exports.eventSubscribe = eventSubscribe;
+exports.clearDestination = clearDestination;
+exports.clearOrigin = clearOrigin;
+exports.createDestination = createDestination;
+exports.createOrigin = createOrigin;
 exports.eventEmit = eventEmit;
-
-var _action_types = require('../constants/action_types');
-
-var types = _interopRequireWildcard(_action_types);
-
-var _utils = require('../utils');
-
-var _utils2 = _interopRequireDefault(_utils);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-var request = new XMLHttpRequest();
-
+exports.eventSubscribe = eventSubscribe;
+exports.hoverMarker = hoverMarker;
+exports.queryDestination = queryDestination;
+exports.queryDestinationCoordinates = queryDestinationCoordinates;
+exports.queryOrigin = queryOrigin;
+exports.queryOriginCoordinates = queryOriginCoordinates;
+exports.removeWaypoint = removeWaypoint;
+exports.reverse = reverse;
+exports.setDestinationFromCoordinates = setDestinationFromCoordinates;
+exports.setOptions = setOptions;
+exports.setOriginFromCoordinates = setOriginFromCoordinates;
+exports.setProfile = setProfile;
+exports.setRouteIndex = setRouteIndex;
+exports.setWaypoint = setWaypoint;
+var types = _interopRequireWildcard(require("../constants/action_types"));
+var _utils = _interopRequireDefault(require("../utils"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 function originPoint(coordinates) {
   return function (dispatch) {
-    var origin = _utils2.default.createPoint(coordinates, {
+    var origin = _utils["default"].createPoint(coordinates, {
       id: 'origin',
       'marker-symbol': 'A'
     });
-
-    dispatch({ type: types.ORIGIN, origin: origin });
-    dispatch(eventEmit('origin', { feature: origin }));
+    dispatch({
+      type: types.ORIGIN,
+      origin: origin
+    });
+    dispatch(eventEmit('origin', {
+      feature: origin
+    }));
   };
 }
-
 function destinationPoint(coordinates) {
   return function (dispatch) {
-    var destination = _utils2.default.createPoint(coordinates, {
+    var destination = _utils["default"].createPoint(coordinates, {
       id: 'destination',
       'marker-symbol': 'B'
     });
-
-    dispatch({ type: types.DESTINATION, destination: destination });
-    dispatch(eventEmit('destination', { feature: destination }));
+    dispatch({
+      type: types.DESTINATION,
+      destination: destination
+    });
+    dispatch(eventEmit('destination', {
+      feature: destination
+    }));
   };
 }
-
+function directionsRequestStart(request) {
+  return function (dispatch) {
+    dispatch({
+      type: types.DIRECTIONS_REQUEST_START,
+      request: request
+    });
+  };
+}
 function setDirections(directions) {
   return function (dispatch) {
     dispatch({
       type: types.DIRECTIONS,
       directions: directions
     });
-    dispatch(eventEmit('route', { route: directions }));
+    dispatch(eventEmit('route', {
+      route: directions
+    }));
   };
 }
-
 function updateWaypoints(waypoints) {
   return {
     type: types.WAYPOINTS,
     waypoints: waypoints
   };
 }
-
 function setHoverMarker(feature) {
   return {
     type: types.HOVER_MARKER,
     hoverMarker: feature
   };
 }
-
 function fetchDirections() {
   return function (dispatch, getState) {
     var _getState = getState(),
-        api = _getState.api,
-        accessToken = _getState.accessToken,
-        routeIndex = _getState.routeIndex,
-        profile = _getState.profile,
-        alternatives = _getState.alternatives,
-        congestion = _getState.congestion,
-        destination = _getState.destination,
-        language = _getState.language,
-        exclude = _getState.exclude;
+      api = _getState.api,
+      accessToken = _getState.accessToken,
+      routeIndex = _getState.routeIndex,
+      profile = _getState.profile,
+      alternatives = _getState.alternatives,
+      congestion = _getState.congestion,
+      destination = _getState.destination,
+      language = _getState.language,
+      exclude = _getState.exclude,
+      fetchDirectionsRequest = _getState.fetchDirectionsRequest;
     // if there is no destination set, do not make request because it will fail
-
-
     if (!(destination && destination.geometry)) return;
-
+    if (fetchDirectionsRequest) {
+      fetchDirectionsRequest.abort();
+    }
     var query = buildDirectionsQuery(getState);
 
     // Request params
@@ -6851,9 +7006,9 @@ function fetchDirections() {
     if (language) options.push('language=' + language);
     if (exclude) options.push('exclude=' + exclude);
     if (accessToken) options.push('access_token=' + accessToken);
-    request.abort();
-    request.open('GET', '' + api + profile + '/' + query + '.json?' + options.join('&'), true);
-
+    var request = new XMLHttpRequest();
+    request.open('GET', "".concat(api).concat(profile, "/").concat(query, ".json?").concat(options.join('&')), true);
+    dispatch(directionsRequestStart(request));
     request.onload = function () {
       if (request.status >= 200 && request.status < 400) {
         var data = JSON.parse(request.responseText);
@@ -6862,6 +7017,10 @@ function fetchDirections() {
           return dispatch(setError(data.error));
         }
 
+        // Catch no route responses and display message to user
+        if (data.message === 'No route found') {
+          return dispatch(setError('No route found'));
+        }
         dispatch(setError(null));
         if (!data.routes[routeIndex]) dispatch(setRouteIndex(0));
         dispatch(setDirections(data.routes));
@@ -6874,12 +7033,11 @@ function fetchDirections() {
         return dispatch(setError(JSON.parse(request.responseText).message));
       }
     };
-
     request.onerror = function () {
       dispatch(setDirections([]));
-      return dispatch(setError(JSON.parse(request.responseText).message));
+      if (request.responseText) return dispatch(setError(JSON.parse(request.responseText).message));
+      return dispatch(setError('Error'));
     };
-
     request.send();
   };
 }
@@ -6891,10 +7049,9 @@ function fetchDirections() {
  */
 function buildDirectionsQuery(state) {
   var _state = state(),
-      origin = _state.origin,
-      destination = _state.destination,
-      waypoints = _state.waypoints;
-
+    origin = _state.origin,
+    destination = _state.destination,
+    waypoints = _state.waypoints;
   var query = [];
   query.push(origin.geometry.coordinates.join(','));
   query.push(';');
@@ -6906,129 +7063,130 @@ function buildDirectionsQuery(state) {
       query.push(';');
     });
   }
-
   query.push(destination.geometry.coordinates.join(','));
   return encodeURIComponent(query.join(''));
 }
-
 function normalizeWaypoint(waypoint) {
-  var properties = { id: 'waypoint' };
+  var properties = {
+    id: 'waypoint'
+  };
   return Object.assign(waypoint, {
     properties: waypoint.properties ? Object.assign(waypoint.properties, properties) : properties
   });
 }
-
 function setError(error) {
   return function (dispatch) {
     dispatch({
       type: 'ERROR',
       error: error
     });
-    if (error) dispatch(eventEmit('error', { error: error }));
+    if (error) dispatch(eventEmit('error', {
+      error: error
+    }));
   };
 }
-
 function queryOrigin(query) {
   return {
     type: types.ORIGIN_QUERY,
     query: query
   };
 }
-
 function queryDestination(query) {
   return {
     type: types.DESTINATION_QUERY,
     query: query
   };
 }
-
 function queryOriginCoordinates(coords) {
   return {
     type: types.ORIGIN_FROM_COORDINATES,
     coordinates: coords
   };
 }
-
 function queryDestinationCoordinates(coords) {
   return {
     type: types.DESTINATION_FROM_COORDINATES,
     coordinates: coords
   };
 }
-
 function clearOrigin() {
   return function (dispatch) {
     dispatch({
       type: types.ORIGIN_CLEAR
     });
-    dispatch(eventEmit('clear', { type: 'origin' }));
+    dispatch(eventEmit('clear', {
+      type: 'origin'
+    }));
     dispatch(setError(null));
   };
 }
-
 function clearDestination() {
-  return function (dispatch) {
+  return function (dispatch, getState) {
+    var _getState2 = getState(),
+      fetchDirectionsRequest = _getState2.fetchDirectionsRequest;
+    if (fetchDirectionsRequest) {
+      fetchDirectionsRequest.abort();
+    }
     dispatch({
       type: types.DESTINATION_CLEAR
     });
-    dispatch(eventEmit('clear', { type: 'destination' }));
+    dispatch(eventEmit('clear', {
+      type: 'destination'
+    }));
     dispatch(setError(null));
   };
 }
-
 function setOptions(options) {
   return {
     type: types.SET_OPTIONS,
     options: options
   };
 }
-
 function hoverMarker(coordinates) {
   return function (dispatch) {
-    var feature = coordinates ? _utils2.default.createPoint(coordinates, { id: 'hover' }) : {};
+    var feature = coordinates ? _utils["default"].createPoint(coordinates, {
+      id: 'hover'
+    }) : {};
     dispatch(setHoverMarker(feature));
   };
 }
-
 function setRouteIndex(routeIndex) {
   return {
     type: types.ROUTE_INDEX,
     routeIndex: routeIndex
   };
 }
-
 function createOrigin(coordinates) {
   return function (dispatch, getState) {
-    var _getState2 = getState(),
-        destination = _getState2.destination;
-
+    var _getState3 = getState(),
+      destination = _getState3.destination;
     dispatch(originPoint(coordinates));
     if (destination.geometry) dispatch(fetchDirections());
   };
 }
-
 function createDestination(coordinates) {
   return function (dispatch, getState) {
-    var _getState3 = getState(),
-        origin = _getState3.origin;
-
+    var _getState4 = getState(),
+      origin = _getState4.origin;
     dispatch(destinationPoint(coordinates));
     if (origin.geometry) dispatch(fetchDirections());
   };
 }
-
 function setProfile(profile) {
   return function (dispatch, getState) {
-    var _getState4 = getState(),
-        origin = _getState4.origin,
-        destination = _getState4.destination;
-
-    dispatch({ type: types.DIRECTIONS_PROFILE, profile: profile });
-    dispatch(eventEmit('profile', { profile: profile }));
+    var _getState5 = getState(),
+      origin = _getState5.origin,
+      destination = _getState5.destination;
+    dispatch({
+      type: types.DIRECTIONS_PROFILE,
+      profile: profile
+    });
+    dispatch(eventEmit('profile', {
+      profile: profile
+    }));
     if (origin.geometry && destination.geometry) dispatch(fetchDirections());
   };
 }
-
 function reverse() {
   return function (dispatch, getState) {
     var state = getState();
@@ -7038,7 +7196,8 @@ function reverse() {
     var suggestions = document.getElementsByClassName('suggestions');
     for (var i = 0; i < suggestions.length; i++) {
       suggestions[i].style.visibility = 'hidden';
-    };
+    }
+    ;
   };
 }
 
@@ -7049,7 +7208,7 @@ function reverse() {
  */
 function setOriginFromCoordinates(coords) {
   return function (dispatch) {
-    if (!_utils2.default.validCoords(coords)) coords = [_utils2.default.wrap(coords[0]), _utils2.default.wrap(coords[1])];
+    if (!_utils["default"].validCoords(coords)) coords = [_utils["default"].wrap(coords[0]), _utils["default"].wrap(coords[1])];
     if (isNaN(coords[0]) && isNaN(coords[1])) return dispatch(setError(new Error('Coordinates are not valid')));
     dispatch(queryOriginCoordinates(coords));
     dispatch(createOrigin(coords));
@@ -7063,57 +7222,48 @@ function setOriginFromCoordinates(coords) {
  */
 function setDestinationFromCoordinates(coords) {
   return function (dispatch) {
-    if (!_utils2.default.validCoords(coords)) coords = [_utils2.default.wrap(coords[0]), _utils2.default.wrap(coords[1])];
+    if (!_utils["default"].validCoords(coords)) coords = [_utils["default"].wrap(coords[0]), _utils["default"].wrap(coords[1])];
     if (isNaN(coords[0]) && isNaN(coords[1])) return dispatch(setError(new Error('Coordinates are not valid')));
     dispatch(createDestination(coords));
     dispatch(queryDestinationCoordinates(coords));
   };
 }
-
 function addWaypoint(index, waypoint) {
   return function (dispatch, getState) {
-    var _getState5 = getState(),
-        destination = _getState5.destination,
-        waypoints = _getState5.waypoints;
-
+    var _getState6 = getState(),
+      destination = _getState6.destination,
+      waypoints = _getState6.waypoints;
     waypoints.splice(index, 0, normalizeWaypoint(waypoint));
     dispatch(updateWaypoints(waypoints));
     if (destination.geometry) dispatch(fetchDirections());
   };
 }
-
 function setWaypoint(index, waypoint) {
   return function (dispatch, getState) {
-    var _getState6 = getState(),
-        destination = _getState6.destination,
-        waypoints = _getState6.waypoints;
-
+    var _getState7 = getState(),
+      destination = _getState7.destination,
+      waypoints = _getState7.waypoints;
     waypoints[index] = normalizeWaypoint(waypoint);
     dispatch(updateWaypoints(waypoints));
     if (destination.geometry) dispatch(fetchDirections());
   };
 }
-
 function removeWaypoint(waypoint) {
   return function (dispatch, getState) {
-    var _getState7 = getState(),
-        destination = _getState7.destination,
-        waypoints = _getState7.waypoints;
-
+    var _getState8 = getState(),
+      destination = _getState8.destination,
+      waypoints = _getState8.waypoints;
     waypoints = waypoints.filter(function (way) {
-      return !_utils2.default.coordinateMatch(way, waypoint);
+      return !_utils["default"].coordinateMatch(way, waypoint);
     });
-
     dispatch(updateWaypoints(waypoints));
     if (destination.geometry) dispatch(fetchDirections());
   };
 }
-
 function eventSubscribe(type, fn) {
   return function (dispatch, getState) {
-    var _getState8 = getState(),
-        events = _getState8.events;
-
+    var _getState9 = getState(),
+      events = _getState9.events;
     events[type] = events[type] || [];
     events[type].push(fn);
     return {
@@ -7122,123 +7272,117 @@ function eventSubscribe(type, fn) {
     };
   };
 }
-
 function eventEmit(type, data) {
   var _this = this;
-
   return function (dispatch, getState) {
-    var _getState9 = getState(),
-        events = _getState9.events;
-
+    var _getState10 = getState(),
+      events = _getState10.events;
     if (!events[type]) {
       return {
         type: types.EVENTS,
         events: events
       };
     }
-
     var listeners = events[type].slice();
-
     for (var i = 0; i < listeners.length; i++) {
       listeners[i].call(_this, data);
     }
   };
 }
 
-},{"../constants/action_types":39,"../utils":47}],39:[function(require,module,exports){
+},{"../constants/action_types":26,"../utils":34}],26:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.WAYPOINTS = exports.SET_OPTIONS = exports.ROUTE_INDEX = exports.ORIGIN_QUERY = exports.ORIGIN_FROM_COORDINATES = exports.ORIGIN_CLEAR = exports.ORIGIN = exports.HOVER_MARKER = exports.EVENTS = exports.ERROR = exports.DIRECTIONS_REQUEST_START = exports.DIRECTIONS_PROFILE = exports.DIRECTIONS = exports.DESTINATION_QUERY = exports.DESTINATION_FROM_COORDINATES = exports.DESTINATION_CLEAR = exports.DESTINATION = void 0;
+var DESTINATION = 'DESTINATION';
+exports.DESTINATION = DESTINATION;
+var DESTINATION_CLEAR = 'DESTINATION_CLEAR';
+exports.DESTINATION_CLEAR = DESTINATION_CLEAR;
+var DESTINATION_QUERY = 'DESTINATION_QUERY';
+exports.DESTINATION_QUERY = DESTINATION_QUERY;
+var DESTINATION_FROM_COORDINATES = 'DESTINATION_FROM_COORDINATES';
+exports.DESTINATION_FROM_COORDINATES = DESTINATION_FROM_COORDINATES;
+var DIRECTIONS = 'DIRECTIONS';
+exports.DIRECTIONS = DIRECTIONS;
+var DIRECTIONS_REQUEST_START = 'DIRECTIONS_REQUEST_START';
+exports.DIRECTIONS_REQUEST_START = DIRECTIONS_REQUEST_START;
+var DIRECTIONS_PROFILE = 'DIRECTIONS_PROFILE';
+exports.DIRECTIONS_PROFILE = DIRECTIONS_PROFILE;
+var EVENTS = 'EVENTS';
+exports.EVENTS = EVENTS;
+var ERROR = 'ERROR';
+exports.ERROR = ERROR;
+var HOVER_MARKER = 'HOVER_MARKER';
+exports.HOVER_MARKER = HOVER_MARKER;
+var ORIGIN = 'ORIGIN';
+exports.ORIGIN = ORIGIN;
+var ORIGIN_CLEAR = 'ORIGIN_CLEAR';
+exports.ORIGIN_CLEAR = ORIGIN_CLEAR;
+var ORIGIN_QUERY = 'ORIGIN_QUERY';
+exports.ORIGIN_QUERY = ORIGIN_QUERY;
+var ORIGIN_FROM_COORDINATES = 'ORIGIN_FROM_COORDINATES';
+exports.ORIGIN_FROM_COORDINATES = ORIGIN_FROM_COORDINATES;
+var ROUTE_INDEX = 'ROUTE_INDEX';
+exports.ROUTE_INDEX = ROUTE_INDEX;
+var SET_OPTIONS = 'SET_OPTIONS';
+exports.SET_OPTIONS = SET_OPTIONS;
+var WAYPOINTS = 'WAYPOINTS';
+exports.WAYPOINTS = WAYPOINTS;
+
+},{}],27:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var DESTINATION = exports.DESTINATION = 'DESTINATION';
-var DESTINATION_CLEAR = exports.DESTINATION_CLEAR = 'DESTINATION_CLEAR';
-var DESTINATION_QUERY = exports.DESTINATION_QUERY = 'DESTINATION_QUERY';
-var DESTINATION_FROM_COORDINATES = exports.DESTINATION_FROM_COORDINATES = 'DESTINATION_FROM_COORDINATES';
-var DIRECTIONS = exports.DIRECTIONS = 'DIRECTIONS';
-var DIRECTIONS_PROFILE = exports.DIRECTIONS_PROFILE = 'DIRECTIONS_PROFILE';
-var EVENTS = exports.EVENTS = 'EVENTS';
-var ERROR = exports.ERROR = 'ERROR';
-var HOVER_MARKER = exports.HOVER_MARKER = 'HOVER_MARKER';
-var ORIGIN = exports.ORIGIN = 'ORIGIN';
-var ORIGIN_CLEAR = exports.ORIGIN_CLEAR = 'ORIGIN_CLEAR';
-var ORIGIN_QUERY = exports.ORIGIN_QUERY = 'ORIGIN_QUERY';
-var ORIGIN_FROM_COORDINATES = exports.ORIGIN_FROM_COORDINATES = 'ORIGIN_FROM_COORDINATES';
-var ROUTE_INDEX = exports.ROUTE_INDEX = 'ROUTE_INDEX';
-var SET_OPTIONS = exports.SET_OPTIONS = 'SET_OPTIONS';
-var WAYPOINTS = exports.WAYPOINTS = 'WAYPOINTS';
-
-},{}],40:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _suggestions = require('suggestions');
-
-var _suggestions2 = _interopRequireDefault(_suggestions);
-
-var _lodash = require('lodash.debounce');
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
-var _events = require('events');
-
-var _utils = require('../utils');
-
-var _utils2 = _interopRequireDefault(_utils);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
+exports["default"] = void 0;
+var _suggestions = _interopRequireDefault(require("suggestions"));
+var _lodash = _interopRequireDefault(require("lodash.debounce"));
+var _events = require("events");
+var _utils = _interopRequireDefault(require("../utils"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 // Geocoder - this slightly mimicks the mapboxl-gl-geocoder but isn't an exact replica.
 // Once gl-js plugins can be added to custom divs, we should be able to require mapbox-gl-geocoder
 // instead of including it here
-
-var Geocoder = function () {
+var Geocoder = /*#__PURE__*/function () {
   function Geocoder(options) {
     _classCallCheck(this, Geocoder);
-
     this._ev = new _events.EventEmitter();
     this.options = options;
     this.api = options && options.api || 'https://api.mapbox.com/geocoding/v5/mapbox.places/';
   }
-
   _createClass(Geocoder, [{
-    key: 'onAdd',
+    key: "onAdd",
     value: function onAdd(map) {
       this._map = map;
-
       this.request = new XMLHttpRequest();
 
       // Template
       var el = document.createElement('div');
       el.className = 'mapboxgl-ctrl-geocoder';
-
       var icon = document.createElement('span');
       icon.className = 'geocoder-icon geocoder-icon-search';
-
       var input = this._inputEl = document.createElement('input');
       input.type = 'text';
       input.placeholder = this.options.placeholder;
-
-      input.addEventListener('keydown', (0, _lodash2.default)(function (e) {
+      input.addEventListener('keydown', (0, _lodash["default"])(function (e) {
         if (!e.target.value) return this._clearEl.classList.remove('active');
 
         // TAB, ESC, LEFT, RIGHT, ENTER, UP, DOWN
         if (e.metaKey || [9, 27, 37, 39, 13, 38, 40].indexOf(e.keyCode) !== -1) return;
         this._queryFromInput(e.target.value);
       }.bind(this)), 200);
-
       input.addEventListener('change', function (e) {
         if (e.target.value) this._clearEl.classList.add('active');
-
         var selected = this._typeahead.selected;
         if (selected) {
           if (this.options.flyTo) {
@@ -7253,51 +7397,46 @@ var Geocoder = function () {
             }
           }
           this._input = selected;
-          this.fire('result', { result: selected });
+          this.fire('result', {
+            result: selected
+          });
         }
       }.bind(this));
-
       var actions = document.createElement('div');
       actions.classList.add('geocoder-pin-right');
-
       var clear = this._clearEl = document.createElement('button');
       clear.className = 'geocoder-icon geocoder-icon-close';
       clear.addEventListener('click', this._clear.bind(this));
-
       var loading = this._loadingEl = document.createElement('span');
       loading.className = 'geocoder-icon geocoder-icon-loading';
-
       actions.appendChild(clear);
       actions.appendChild(loading);
-
       el.appendChild(icon);
       el.appendChild(input);
       el.appendChild(actions);
 
       // Override the control being added to control containers
       if (this.options.container) this.options.position = false;
-
-      this._typeahead = new _suggestions2.default(input, [], { filter: false });
+      this._typeahead = new _suggestions["default"](input, [], {
+        filter: false
+      });
       this._typeahead.getItemValue = function (item) {
         return item.place_name;
       };
-
       return el;
     }
   }, {
-    key: '_geocode',
+    key: "_geocode",
     value: function _geocode(q, callback) {
       this._loadingEl.classList.add('active');
       this.fire('loading');
-
       var geocodingOptions = this.options;
-      var exclude = ['placeholder', 'zoom', 'flyTo', 'accessToken'];
+      var exclude = ['placeholder', 'zoom', 'flyTo', 'accessToken', 'api'];
       var options = Object.keys(this.options).filter(function (key) {
         return exclude.indexOf(key) === -1;
       }).map(function (key) {
         return key + '=' + geocodingOptions[key];
       });
-
       var accessToken = this.options.accessToken ? this.options.accessToken : mapboxgl.accessToken;
       options.push('access_token=' + accessToken);
       this.request.abort();
@@ -7312,24 +7451,27 @@ var Geocoder = function () {
             this._clearEl.classList.remove('active');
             this._typeahead.selected = null;
           }
-
-          this.fire('results', { results: data.features });
+          this.fire('results', {
+            results: data.features
+          });
           this._typeahead.update(data.features);
           return callback(data.features);
         } else {
-          this.fire('error', { error: JSON.parse(this.request.responseText).message });
+          this.fire('error', {
+            error: JSON.parse(this.request.responseText).message
+          });
         }
       }.bind(this);
-
       this.request.onerror = function () {
         this._loadingEl.classList.remove('active');
-        this.fire('error', { error: JSON.parse(this.request.responseText).message });
+        this.fire('error', {
+          error: JSON.parse(this.request.responseText).message
+        });
       }.bind(this);
-
       this.request.send();
     }
   }, {
-    key: '_queryFromInput',
+    key: "_queryFromInput",
     value: function _queryFromInput(q) {
       q = q.trim();
       if (!q) this._clear();
@@ -7340,20 +7482,19 @@ var Geocoder = function () {
       }
     }
   }, {
-    key: '_change',
+    key: "_change",
     value: function _change() {
       var onChange = document.createEvent('HTMLEvents');
       onChange.initEvent('change', true, false);
       this._inputEl.dispatchEvent(onChange);
     }
   }, {
-    key: '_query',
+    key: "_query",
     value: function _query(input) {
       if (!input) return;
-      if ((typeof input === 'undefined' ? 'undefined' : _typeof(input)) === 'object' && input.length) {
-        input = [_utils2.default.wrap(input[0]), _utils2.default.wrap(input[1])].join();
+      if (_typeof(input) === 'object' && input.length) {
+        input = [_utils["default"].wrap(input[0]), _utils["default"].wrap(input[1])].join();
       }
-
       this._geocode(input, function (results) {
         if (!results.length) return;
         var result = results[0];
@@ -7364,11 +7505,11 @@ var Geocoder = function () {
       }.bind(this));
     }
   }, {
-    key: '_setInput',
+    key: "_setInput",
     value: function _setInput(input) {
       if (!input) return;
-      if ((typeof input === 'undefined' ? 'undefined' : _typeof(input)) === 'object' && input.length) {
-        input = [_utils2.default.roundWithOriginalPrecision(_utils2.default.wrap(input[0]), input[0]), _utils2.default.roundWithOriginalPrecision(_utils2.default.wrap(input[1]), input[1])].join();
+      if (_typeof(input) === 'object' && input.length) {
+        input = [_utils["default"].roundWithOriginalPrecision(_utils["default"].wrap(input[0]), input[0]), _utils["default"].roundWithOriginalPrecision(_utils["default"].wrap(input[1]), input[1])].join();
       }
 
       // Set input value to passed value and clear everything else.
@@ -7379,7 +7520,7 @@ var Geocoder = function () {
       this._change();
     }
   }, {
-    key: '_clear',
+    key: "_clear",
     value: function _clear() {
       this._input = null;
       this._inputEl.value = '';
@@ -7391,7 +7532,7 @@ var Geocoder = function () {
       this.fire('clear');
     }
   }, {
-    key: 'getResult',
+    key: "getResult",
     value: function getResult() {
       return this._input;
     }
@@ -7401,9 +7542,8 @@ var Geocoder = function () {
      * @param {Array|String} query An array of coordinates [lng, lat] or location name as a string.
      * @returns {Geocoder} this
      */
-
   }, {
-    key: 'query',
+    key: "query",
     value: function query(_query2) {
       this._query(_query2);
       return this;
@@ -7414,9 +7554,8 @@ var Geocoder = function () {
      * @param {Array|String} value An array of coordinates [lng, lat] or location name as a string. Calling this function just sets the input and does not trigger an API request.
      * @returns {Geocoder} this
      */
-
   }, {
-    key: 'setInput',
+    key: "setInput",
     value: function setInput(value) {
       this._setInput(value);
       return this;
@@ -7434,9 +7573,8 @@ var Geocoder = function () {
      * @param {Function} fn function that's called when the event is emitted.
      * @returns {Geocoder} this;
      */
-
   }, {
-    key: 'on',
+    key: "on",
     value: function on(type, fn) {
       this._ev.on(type, fn);
       this._ev.on('error', function (err) {
@@ -7450,9 +7588,8 @@ var Geocoder = function () {
      * @param {Object} data event data to pass to the function subscribed.
      * @returns {Geocoder} this
      */
-
   }, {
-    key: 'fire',
+    key: "fire",
     value: function fire(type, data) {
       this._ev.emit(type, data);
       return this;
@@ -7464,52 +7601,38 @@ var Geocoder = function () {
      * @param {String} type Event name.
      * @param {Function} fn Function that should unsubscribe to the event emitted.
      */
-
   }, {
-    key: 'off',
+    key: "off",
     value: function off(type, fn) {
       this._ev.removeListener(type, fn);
       return this;
     }
   }]);
-
   return Geocoder;
 }();
-
-exports.default = Geocoder;
+exports["default"] = Geocoder;
 ;
 
-},{"../utils":47,"events":3,"lodash.debounce":7,"suggestions":30}],41:[function(require,module,exports){
-'use strict';
+},{"../utils":34,"events":7,"lodash.debounce":10,"suggestions":19}],28:[function(require,module,exports){
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _geocoder = require('./geocoder');
-
-var _geocoder2 = _interopRequireDefault(_geocoder);
-
-var _lodash = require('lodash.template');
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
-var _lodash3 = require('lodash.isequal');
-
-var _lodash4 = _interopRequireDefault(_lodash3);
-
-var _turfExtent = require('turf-extent');
-
-var _turfExtent2 = _interopRequireDefault(_turfExtent);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
+exports["default"] = void 0;
+var _geocoder = _interopRequireDefault(require("./geocoder"));
+var _lodash = _interopRequireDefault(require("lodash.template"));
+var _lodash2 = _interopRequireDefault(require("lodash.isequal"));
+var _turfExtent = _interopRequireDefault(require("turf-extent"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
  // substack/brfs#39
-var tmpl = (0, _lodash2.default)("<div class='mapbox-directions-component mapbox-directions-inputs'>\n  <div class='mapbox-directions-component-keyline'>\n    <div class='mapbox-directions-origin'>\n      <label class='mapbox-form-label'>\n        <span class='directions-icon directions-icon-depart'></span>\n      </label>\n      <div id='mapbox-directions-origin-input'></div>\n    </div>\n\n    <button\n      class='directions-icon directions-icon-reverse directions-reverse js-reverse-inputs'\n      title='Reverse origin &amp; destination'>\n    </button>\n\n    <div class='mapbox-directions-destination'>\n      <label class='mapbox-form-label'>\n        <span class='directions-icon directions-icon-arrive'></span>\n      </label>\n      <div id='mapbox-directions-destination-input'></div>\n    </div>\n  </div>\n\n  <% if (controls.profileSwitcher) { %>\n  <div class='mapbox-directions-profile mapbox-directions-component-keyline mapbox-directions-clearfix'><input\n      id='mapbox-directions-profile-driving-traffic'\n      type='radio'\n      name='profile'\n      value='mapbox/driving-traffic'\n      <% if (profile === 'mapbox/driving-traffic') { %>checked<% } %>\n    />\n    <label for='mapbox-directions-profile-driving-traffic'>Traffic</label>\n    <input\n      id='mapbox-directions-profile-driving'\n      type='radio'\n      name='profile'\n      value='mapbox/driving'\n      <% if (profile === 'mapbox/driving') { %>checked<% } %>\n    />\n    <label for='mapbox-directions-profile-driving'>Driving</label>\n    <input\n      id='mapbox-directions-profile-walking'\n      type='radio'\n      name='profile'\n      value='mapbox/walking'\n      <% if (profile === 'mapbox/walking') { %>checked<% } %>\n    />\n    <label for='mapbox-directions-profile-walking'>Walking</label>\n    <input\n      id='mapbox-directions-profile-cycling'\n      type='radio'\n      name='profile'\n      value='mapbox/cycling'\n      <% if (profile === 'mapbox/cycling') { %>checked<% } %>\n    />\n    <label for='mapbox-directions-profile-cycling'>Cycling</label>\n  </div>\n  <% } %>\n</div>\n");
+var tmpl = (0, _lodash["default"])("<div class='mapbox-directions-component mapbox-directions-inputs'>\n  <div class='mapbox-directions-component-keyline'>\n    <div class='mapbox-directions-origin'>\n      <label class='mapbox-form-label'>\n        <span class='directions-icon directions-icon-depart'></span>\n      </label>\n      <div id='mapbox-directions-origin-input'></div>\n    </div>\n\n    <button\n      class='directions-icon directions-icon-reverse directions-reverse js-reverse-inputs'\n      title='Reverse origin &amp; destination'>\n    </button>\n\n    <div class='mapbox-directions-destination'>\n      <label class='mapbox-form-label'>\n        <span class='directions-icon directions-icon-arrive'></span>\n      </label>\n      <div id='mapbox-directions-destination-input'></div>\n    </div>\n  </div>\n\n  <% if (controls.profileSwitcher) { %>\n  <div class='mapbox-directions-profile mapbox-directions-component-keyline mapbox-directions-clearfix'><input\n      id='mapbox-directions-profile-driving-traffic'\n      type='radio'\n      name='profile'\n      value='mapbox/driving-traffic'\n      <% if (profile === 'mapbox/driving-traffic') { %>checked<% } %>\n    />\n    <label for='mapbox-directions-profile-driving-traffic'>Traffic</label>\n    <input\n      id='mapbox-directions-profile-driving'\n      type='radio'\n      name='profile'\n      value='mapbox/driving'\n      <% if (profile === 'mapbox/driving') { %>checked<% } %>\n    />\n    <label for='mapbox-directions-profile-driving'>Driving</label>\n    <input\n      id='mapbox-directions-profile-walking'\n      type='radio'\n      name='profile'\n      value='mapbox/walking'\n      <% if (profile === 'mapbox/walking') { %>checked<% } %>\n    />\n    <label for='mapbox-directions-profile-walking'>Walking</label>\n    <input\n      id='mapbox-directions-profile-cycling'\n      type='radio'\n      name='profile'\n      value='mapbox/cycling'\n      <% if (profile === 'mapbox/cycling') { %>checked<% } %>\n    />\n    <label for='mapbox-directions-profile-cycling'>Cycling</label>\n  </div>\n  <% } %>\n</div>\n");
 
 /**
  * Inputs controller
@@ -7520,103 +7643,97 @@ var tmpl = (0, _lodash2.default)("<div class='mapbox-directions-component mapbox
  * @param {Object} map The mapboxgl instance
  * @private
  */
-
-var Inputs = function () {
+var Inputs = /*#__PURE__*/function () {
   function Inputs(el, store, actions, map) {
     _classCallCheck(this, Inputs);
-
     var _store$getState = store.getState(),
-        originQuery = _store$getState.originQuery,
-        destinationQuery = _store$getState.destinationQuery,
-        profile = _store$getState.profile,
-        controls = _store$getState.controls;
-
+      originQuery = _store$getState.originQuery,
+      destinationQuery = _store$getState.destinationQuery,
+      profile = _store$getState.profile,
+      controls = _store$getState.controls;
     el.innerHTML = tmpl({
       originQuery: originQuery,
       destinationQuery: destinationQuery,
       profile: profile,
       controls: controls
     });
-
     this.container = el;
     this.actions = actions;
     this.store = store;
     this._map = map;
-
     this.onAdd();
     this.render();
   }
-
   _createClass(Inputs, [{
-    key: 'animateToCoordinates',
+    key: "animateToCoordinates",
     value: function animateToCoordinates(mode, coords) {
-      var _store$getState2 = this.store.getState(),
-          origin = _store$getState2.origin,
-          destination = _store$getState2.destination,
-          routePadding = _store$getState2.routePadding;
-
-      if (origin.geometry && destination.geometry && !(0, _lodash4.default)(origin.geometry, destination.geometry)) {
+      var _this$store$getState = this.store.getState(),
+        origin = _this$store$getState.origin,
+        destination = _this$store$getState.destination,
+        routePadding = _this$store$getState.routePadding;
+      if (origin.geometry && destination.geometry && !(0, _lodash2["default"])(origin.geometry, destination.geometry)) {
         // Animate map to fit bounds.
-        var bb = (0, _turfExtent2.default)({
+        var bb = (0, _turfExtent["default"])({
           type: 'FeatureCollection',
           features: [origin, destination]
         });
-
-        this._map.fitBounds([[bb[0], bb[1]], [bb[2], bb[3]]], { padding: routePadding });
+        this._map.fitBounds([[bb[0], bb[1]], [bb[2], bb[3]]], {
+          padding: routePadding
+        });
       } else {
-        this._map.flyTo({ center: coords });
+        this._map.flyTo({
+          center: coords
+        });
       }
     }
   }, {
-    key: 'onAdd',
+    key: "onAdd",
     value: function onAdd() {
       var _this = this;
-
-      var _actions = this.actions,
-          clearOrigin = _actions.clearOrigin,
-          clearDestination = _actions.clearDestination,
-          createOrigin = _actions.createOrigin,
-          createDestination = _actions.createDestination,
-          setProfile = _actions.setProfile,
-          reverse = _actions.reverse;
-
-      var _store$getState3 = this.store.getState(),
-          geocoder = _store$getState3.geocoder,
-          accessToken = _store$getState3.accessToken,
-          flyTo = _store$getState3.flyTo,
-          placeholderOrigin = _store$getState3.placeholderOrigin,
-          placeholderDestination = _store$getState3.placeholderDestination,
-          zoom = _store$getState3.zoom;
-
-      this.originInput = new _geocoder2.default(Object.assign({}, {
+      var _this$actions = this.actions,
+        clearOrigin = _this$actions.clearOrigin,
+        clearDestination = _this$actions.clearDestination,
+        createOrigin = _this$actions.createOrigin,
+        createDestination = _this$actions.createDestination,
+        setProfile = _this$actions.setProfile,
+        reverse = _this$actions.reverse;
+      var _this$store$getState2 = this.store.getState(),
+        geocoder = _this$store$getState2.geocoder,
+        accessToken = _this$store$getState2.accessToken,
+        flyTo = _this$store$getState2.flyTo,
+        placeholderOrigin = _this$store$getState2.placeholderOrigin,
+        placeholderDestination = _this$store$getState2.placeholderDestination,
+        zoom = _this$store$getState2.zoom;
+      this.originInput = new _geocoder["default"](Object.assign({}, {
         accessToken: accessToken
-      }, geocoder, { flyTo: flyTo, placeholder: placeholderOrigin, zoom: zoom }));
-
+      }, geocoder, {
+        flyTo: flyTo,
+        placeholder: placeholderOrigin,
+        zoom: zoom
+      }));
       var originEl = this.originInput.onAdd(this._map);
       var originContainerEl = this.container.querySelector('#mapbox-directions-origin-input');
       originContainerEl.appendChild(originEl);
-
-      this.destinationInput = new _geocoder2.default(Object.assign({}, {
+      this.destinationInput = new _geocoder["default"](Object.assign({}, {
         accessToken: accessToken
-      }, geocoder, { flyTo: flyTo, placeholder: placeholderDestination, zoom: zoom }));
-
+      }, geocoder, {
+        flyTo: flyTo,
+        placeholder: placeholderDestination,
+        zoom: zoom
+      }));
       var destinationEl = this.destinationInput.onAdd(this._map);
       this.container.querySelector('#mapbox-directions-destination-input').appendChild(destinationEl);
-
       this.originInput.on('result', function (e) {
         var coords = e.result.center;
         createOrigin(coords);
         _this.animateToCoordinates('origin', coords);
       });
-
       this.originInput.on('clear', clearOrigin);
-
       this.destinationInput.on('result', function (e) {
         var coords = e.result.center;
         createDestination(coords);
         _this.animateToCoordinates('destination', coords);
       });
-
       this.destinationInput.on('clear', clearDestination);
 
       // Driving / Walking / Cycling profiles
@@ -7629,43 +7746,37 @@ var Inputs = function () {
 
       // Reversing Origin / Destination
       this.container.querySelector('.js-reverse-inputs').addEventListener('click', function () {
-        var _store$getState4 = _this.store.getState(),
-            origin = _store$getState4.origin,
-            destination = _store$getState4.destination;
-
+        var _this$store$getState3 = _this.store.getState(),
+          origin = _this$store$getState3.origin,
+          destination = _this$store$getState3.destination;
         if (origin) _this.actions.queryDestination(origin.geometry.coordinates);
         if (destination) _this.actions.queryOrigin(destination.geometry.coordinates);
         reverse();
       });
     }
   }, {
-    key: 'render',
+    key: "render",
     value: function render() {
       var _this2 = this;
-
       this.store.subscribe(function () {
-        var _store$getState5 = _this2.store.getState(),
-            originQuery = _store$getState5.originQuery,
-            destinationQuery = _store$getState5.destinationQuery,
-            originQueryCoordinates = _store$getState5.originQueryCoordinates,
-            destinationQueryCoordinates = _store$getState5.destinationQueryCoordinates;
-
+        var _this2$store$getState = _this2.store.getState(),
+          originQuery = _this2$store$getState.originQuery,
+          destinationQuery = _this2$store$getState.destinationQuery,
+          originQueryCoordinates = _this2$store$getState.originQueryCoordinates,
+          destinationQueryCoordinates = _this2$store$getState.destinationQueryCoordinates;
         if (originQuery) {
           _this2.originInput.query(originQuery);
           _this2.actions.queryOrigin(null);
         }
-
         if (destinationQuery) {
           _this2.destinationInput.query(destinationQuery);
           _this2.actions.queryDestination(null);
         }
-
         if (originQueryCoordinates) {
           _this2.originInput.setInput(originQueryCoordinates);
           _this2.animateToCoordinates('origin', originQueryCoordinates);
           _this2.actions.queryOriginCoordinates(null);
         }
-
         if (destinationQueryCoordinates) {
           _this2.destinationInput.setInput(destinationQueryCoordinates);
           _this2.animateToCoordinates('destination', destinationQueryCoordinates);
@@ -7674,40 +7785,30 @@ var Inputs = function () {
       });
     }
   }]);
-
   return Inputs;
 }();
+exports["default"] = Inputs;
 
-exports.default = Inputs;
-
-},{"./geocoder":40,"lodash.isequal":8,"lodash.template":9,"turf-extent":35}],42:[function(require,module,exports){
-'use strict';
+},{"./geocoder":27,"lodash.isequal":11,"lodash.template":12,"turf-extent":22}],29:[function(require,module,exports){
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _utils = require('../utils');
-
-var _utils2 = _interopRequireDefault(_utils);
-
-var _lodash = require('lodash.template');
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
-var _lodash3 = require('lodash.isequal');
-
-var _lodash4 = _interopRequireDefault(_lodash3);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
+exports["default"] = void 0;
+var _utils = _interopRequireDefault(require("../utils"));
+var _lodash = _interopRequireDefault(require("lodash.template"));
+var _lodash2 = _interopRequireDefault(require("lodash.isequal"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
  // substack/brfs#39
-var instructionsTemplate = (0, _lodash2.default)("<div class='directions-control directions-control-directions'>\n  <div class='mapbox-directions-component mapbox-directions-route-summary<% if (routes > 1) { %> mapbox-directions-multiple<% } %>'>\n    <% if (routes > 1) { %>\n    <div class='mapbox-directions-routes mapbox-directions-clearfix'>\n      <% for (var i = 0; i < routes; i++) { %>\n        <input type='radio' name='routes' id='<%= i %>' <% if (i === routeIndex) { %>checked<% } %>>\n        <label for='<%= i %>' class='mapbox-directions-route'><%= i + 1 %></label>\n      <% } %>\n    </div>\n    <% } %>\n    <h1><%- duration %></h1>\n    <span><%- distance %></span>\n  </div>\n\n  <div class='mapbox-directions-instructions'>\n    <div class='mapbox-directions-instructions-wrapper'>\n      <ol class='mapbox-directions-steps'>\n        <% steps.forEach(function(step) { %>\n          <%\n            var distance = step.distance ? format(step.distance) : false;\n            var icon = step.maneuver.modifier ? step.maneuver.modifier.replace(/\\s+/g, '-').toLowerCase() : step.maneuver.type.replace(/\\s+/g, '-').toLowerCase();\n\n            if (step.maneuver.type === 'arrive' || step.maneuver.type === 'depart') {\n              icon = step.maneuver.type;\n            }\n\n            if (step.maneuver.type === 'roundabout' || step.maneuver.type === 'rotary') {\n              icon= 'roundabout';\n            }\n\n            var lng = step.maneuver.location[0];\n            var lat = step.maneuver.location[1];\n          %>\n          <li\n            data-lat='<%= lat %>'\n            data-lng='<%= lng %>'\n            class='mapbox-directions-step'>\n            <span class='directions-icon directions-icon-<%= icon %>'></span>\n            <div class='mapbox-directions-step-maneuver'>\n              <%= step.maneuver.instruction %>\n            </div>\n            <% if (distance) { %>\n              <div class='mapbox-directions-step-distance'>\n                <%= distance %>\n              </div>\n            <% } %>\n          </li>\n        <% }); %>\n      </ol>\n    </div>\n  </div>\n</div>\n");
-var errorTemplate = (0, _lodash2.default)("<div class='directions-control directions-control-directions'>\n  <div class='mapbox-directions-error'>\n    <%= error %>\n  </div>\n</div>\n");
+var instructionsTemplate = (0, _lodash["default"])("<div class='directions-control directions-control-directions'>\n  <div class='mapbox-directions-component mapbox-directions-route-summary<% if (routes > 1) { %> mapbox-directions-multiple<% } %>'>\n    <% if (routes > 1) { %>\n    <div class='mapbox-directions-routes mapbox-directions-clearfix'>\n      <% for (var i = 0; i < routes; i++) { %>\n        <input type='radio' name='routes' id='<%= i %>' <% if (i === routeIndex) { %>checked<% } %>>\n        <label for='<%= i %>' class='mapbox-directions-route'><%= i + 1 %></label>\n      <% } %>\n    </div>\n    <% } %>\n    <h1><%- duration %></h1>\n    <span><%- distance %></span>\n  </div>\n\n  <div class='mapbox-directions-instructions'>\n    <div class='mapbox-directions-instructions-wrapper'>\n      <ol class='mapbox-directions-steps'>\n        <% steps.forEach(function(step) { %>\n          <%\n            var distance = step.distance ? format(step.distance) : false;\n            var icon = step.maneuver.modifier ? step.maneuver.modifier.replace(/\\s+/g, '-').toLowerCase() : step.maneuver.type.replace(/\\s+/g, '-').toLowerCase();\n\n            if (['arrive', 'depart', 'waypoint'].includes(step.maneuver.type)) {\n              icon = step.maneuver.type;\n            }\n\n            if (step.maneuver.type === 'roundabout' || step.maneuver.type === 'rotary') {\n              icon = 'roundabout';\n            }\n\n            var lng = step.maneuver.location[0];\n            var lat = step.maneuver.location[1];\n          %>\n          <li\n            data-lat='<%= lat %>'\n            data-lng='<%= lng %>'\n            class='mapbox-directions-step'>\n            <span class='directions-icon directions-icon-<%= icon %>'></span>\n            <div class='mapbox-directions-step-maneuver'>\n              <%= step.maneuver.instruction %>\n            </div>\n            <% if (distance) { %>\n              <div class='mapbox-directions-step-distance'>\n                <%= distance %>\n              </div>\n            <% } %>\n          </li>\n        <% }); %>\n      </ol>\n    </div>\n  </div>\n</div>\n");
+var errorTemplate = (0, _lodash["default"])("<div class='directions-control directions-control-directions'>\n  <div class='mapbox-directions-error'>\n    <%= error %>\n  </div>\n</div>\n");
 
 /**
  * Summary/Instructions controller
@@ -7718,11 +7819,9 @@ var errorTemplate = (0, _lodash2.default)("<div class='directions-control direct
  * @param {Object} map The mapboxgl instance
  * @private
  */
-
-var Instructions = function () {
+var Instructions = /*#__PURE__*/function () {
   function Instructions(el, store, actions, map) {
     _classCallCheck(this, Instructions);
-
     this.container = el;
     this.actions = actions;
     this.store = store;
@@ -7730,34 +7829,34 @@ var Instructions = function () {
     this.directions = {};
     this.render();
   }
-
   _createClass(Instructions, [{
-    key: 'render',
+    key: "render",
     value: function render() {
       var _this = this;
-
       this.store.subscribe(function () {
-        var _actions = _this.actions,
-            hoverMarker = _actions.hoverMarker,
-            setRouteIndex = _actions.setRouteIndex;
-
-        var _store$getState = _this.store.getState(),
-            routeIndex = _store$getState.routeIndex,
-            unit = _store$getState.unit,
-            directions = _store$getState.directions,
-            error = _store$getState.error,
-            compile = _store$getState.compile;
-
-        var shouldRender = !(0, _lodash4.default)(directions[routeIndex], _this.directions);
-
+        var _this$actions = _this.actions,
+          hoverMarker = _this$actions.hoverMarker,
+          setRouteIndex = _this$actions.setRouteIndex;
+        var _this$store$getState = _this.store.getState(),
+          routeIndex = _this$store$getState.routeIndex,
+          unit = _this$store$getState.unit,
+          directions = _this$store$getState.directions,
+          error = _this$store$getState.error,
+          compile = _this$store$getState.compile,
+          instructionsOptions = _this$store$getState.instructions;
+        var shouldRender = !(0, _lodash2["default"])(directions[routeIndex], _this.directions);
         if (error) {
-          _this.container.innerHTML = errorTemplate({ error: error });
+          _this.container.innerHTML = errorTemplate({
+            error: error
+          });
           return;
         }
-
+        var filterStepsBy = instructionsOptions.showWaypointInstructions ? undefined : function (step) {
+          return step.maneuver.type !== 'waypoint';
+        };
         if (directions.length && shouldRender) {
           var direction = _this.directions = directions[routeIndex];
-
+          var allSteps = _utils["default"].getAllSteps(direction, filterStepsBy);
           if (compile) {
             direction.legs.forEach(function (leg) {
               leg.steps.forEach(function (step) {
@@ -7765,30 +7864,24 @@ var Instructions = function () {
               });
             });
           }
-
           _this.container.innerHTML = instructionsTemplate({
             routeIndex: routeIndex,
             routes: directions.length,
-            steps: direction.legs[0].steps, // Todo: Respect all legs,
-            format: _utils2.default.format[unit],
-            duration: _utils2.default.format[unit](direction.distance),
-            distance: _utils2.default.format.duration(direction.duration)
+            steps: allSteps,
+            format: _utils["default"].format[unit],
+            duration: _utils["default"].format.duration(direction.duration),
+            distance: _utils["default"].format[unit](direction.distance)
           });
-
           var steps = _this.container.querySelectorAll('.mapbox-directions-step');
-
           Array.prototype.forEach.call(steps, function (el) {
             var lng = el.getAttribute('data-lng');
             var lat = el.getAttribute('data-lat');
-
             el.addEventListener('mouseover', function () {
               hoverMarker([lng, lat]);
             });
-
             el.addEventListener('mouseout', function () {
               hoverMarker(null);
             });
-
             el.addEventListener('click', function () {
               _this._map.flyTo({
                 center: [lng, lat],
@@ -7796,7 +7889,6 @@ var Instructions = function () {
               });
             });
           });
-
           var routes = _this.container.querySelectorAll('input[type="radio"]');
           Array.prototype.forEach.call(routes, function (el) {
             el.addEventListener('change', function (e) {
@@ -7809,73 +7901,41 @@ var Instructions = function () {
       });
     }
   }]);
-
   return Instructions;
 }();
+exports["default"] = Instructions;
 
-exports.default = Instructions;
-
-},{"../utils":47,"lodash.isequal":8,"lodash.template":9}],43:[function(require,module,exports){
-'use strict';
+},{"../utils":34,"lodash.isequal":11,"lodash.template":12}],30:[function(require,module,exports){
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _redux = require('redux');
-
-var _reduxThunk = require('redux-thunk');
-
-var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
-
-var _polyline = require('@mapbox/polyline');
-
-var _utils = require('./utils');
-
-var _utils2 = _interopRequireDefault(_utils);
-
-var _reducers = require('./reducers');
-
-var _reducers2 = _interopRequireDefault(_reducers);
-
-var _actions = require('./actions');
-
-var actions = _interopRequireWildcard(_actions);
-
-var _directions_style = require('./directions_style');
-
-var _directions_style2 = _interopRequireDefault(_directions_style);
-
-var _inputs = require('./controls/inputs');
-
-var _inputs2 = _interopRequireDefault(_inputs);
-
-var _instructions = require('./controls/instructions');
-
-var _instructions2 = _interopRequireDefault(_instructions);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
+exports["default"] = void 0;
+var _redux = require("redux");
+var _reduxThunk = _interopRequireDefault(require("redux-thunk"));
+var _polyline = require("@mapbox/polyline");
+var _utils = _interopRequireDefault(require("./utils"));
+var _reducers = _interopRequireDefault(require("./reducers"));
+var actions = _interopRequireWildcard(require("./actions"));
+var _directions_style = _interopRequireDefault(require("./directions_style"));
+var _inputs = _interopRequireDefault(require("./controls/inputs"));
+var _instructions = _interopRequireDefault(require("./controls/instructions"));
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var storeWithMiddleware = (0, _redux.applyMiddleware)(_reduxThunk2.default)(_redux.createStore);
-var store = storeWithMiddleware(_reducers2.default);
-
-// State object management via redux
-
-
-// Controls
-
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 /**
  * The Directions control
  * @class MapboxDirections
  *
  * @param {Object} options
- * @param {Array} [options.styles] Override default layer properties of the [directions source](https://github.com/mapbox/mapbox-gl-directions/blob/master/src/directions_style.js). Documentation for each property are specified in the [Mapbox GL Style Reference](https://www.mapbox.com/mapbox-gl-style-spec/).
+ * @param {Array} [options.styles] Override default layer properties of the [directions source](https://github.com/mapbox/mapbox-gl-directions/blob/main/src/directions_style.js). Documentation for each property are specified in the [Mapbox GL Style Reference](https://www.mapbox.com/mapbox-gl-style-spec/).
  * @param {String} [options.accessToken=null] Required unless `mapboxgl.accessToken` is set globally
  * @param {String} [options.api="https://api.mapbox.com/directions/v5/"] Override default routing endpoint url
  * @param {Boolean} [options.interactive=true] Enable/Disable mouse or touch interactivity from the plugin
@@ -7889,6 +7949,8 @@ var store = storeWithMiddleware(_reducers2.default);
  * @param {Boolean} [options.controls.inputs=true] Hide or display the inputs control.
  * @param {Boolean} [options.controls.instructions=true] Hide or display the instructions control.
  * @param {Boolean} [options.controls.profileSwitcher=true] Hide or display the default profile switch with options for traffic, driving, walking and cycling.
+ * @param {Object} [options.instructions]
+ * @param {Boolean} [options.instructions.showWaypointInstructions=true] Hide or display instructions for waypoints in the route
  * @param {Number} [options.zoom=16] If no bbox exists from the geocoder result, the zoom you set here will be used in the flyTo.
  * @param {String} [options.language="en"] The language of returned turn-by-turn text instructions. See supported languages : https://docs.mapbox.com/api/navigation/#instructions-languages
  * @param {String} [options.placeholderOrigin="Choose a starting place"] If set, this text will appear as the placeholder attribute for the origin input element.
@@ -7908,55 +7970,47 @@ var store = storeWithMiddleware(_reducers2.default);
  *
  * @return {MapboxDirections} `this`
  */
-var MapboxDirections = function () {
+var MapboxDirections = /*#__PURE__*/function () {
   function MapboxDirections(options) {
     _classCallCheck(this, MapboxDirections);
-
-    this.actions = (0, _redux.bindActionCreators)(actions, store.dispatch);
+    this._directions = null;
+    this._stateSnapshot = null;
+    this._store = this._initStore();
+    this.actions = (0, _redux.bindActionCreators)(actions, this._store.dispatch);
     this.actions.setOptions(options || {});
     this.options = options || {};
-
     this.onDragDown = this._onDragDown.bind(this);
     this.onDragMove = this._onDragMove.bind(this);
     this.onDragUp = this._onDragUp.bind(this);
     this.move = this._move.bind(this);
     this.onClick = this._clickHandler().bind(this);
   }
-
   _createClass(MapboxDirections, [{
-    key: 'onAdd',
+    key: "onAdd",
     value: function onAdd(map) {
       var _this = this;
-
       this._map = map;
-
-      var _store$getState = store.getState(),
-          controls = _store$getState.controls;
-
+      var _this$_store$getState = this._store.getState(),
+        controls = _this$_store$getState.controls;
       var el = this.container = document.createElement('div');
       el.className = 'mapboxgl-ctrl-directions mapboxgl-ctrl';
 
       // Add controls to the page
       var inputEl = document.createElement('div');
       inputEl.className = 'directions-control directions-control-inputs';
-      new _inputs2.default(inputEl, store, this.actions, this._map);
-
+      new _inputs["default"](inputEl, this._store, this.actions, this._map);
       var directionsEl = document.createElement('div');
       directionsEl.className = 'directions-control directions-control-instructions';
-
-      new _instructions2.default(directionsEl, store, {
+      new _instructions["default"](directionsEl, this._store, {
         hoverMarker: this.actions.hoverMarker,
         setRouteIndex: this.actions.setRouteIndex
       }, this._map);
-
       if (controls.inputs) el.appendChild(inputEl);
       if (controls.instructions) el.appendChild(directionsEl);
-
       this.subscribedActions();
       if (this._map.loaded()) this.mapState();else this._map.on('load', function () {
         return _this.mapState();
       });
-
       return el;
     }
 
@@ -7966,9 +8020,8 @@ var MapboxDirections = function () {
      *
      * @returns {Control} `this`
      */
-
   }, {
-    key: 'onRemove',
+    key: "onRemove",
     value: function onRemove(map) {
       this.container.parentNode.removeChild(this.container);
       this.removeRoutes();
@@ -7981,33 +8034,30 @@ var MapboxDirections = function () {
         this.storeUnsubscribe();
         delete this.storeUnsubscribe;
       }
-      _directions_style2.default.forEach(function (layer) {
+      _directions_style["default"].forEach(function (layer) {
         if (map.getLayer(layer.id)) map.removeLayer(layer.id);
       });
-
       if (map.getSource('directions')) map.removeSource('directions');
-
+      if (map.getSource('directions:markers')) map.removeSource('directions:markers');
       this._map = null;
       return this;
     }
   }, {
-    key: 'mapState',
+    key: "mapState",
     value: function mapState() {
       var _this2 = this;
-
-      var _store$getState2 = store.getState(),
-          profile = _store$getState2.profile,
-          alternatives = _store$getState2.alternatives,
-          congestion = _store$getState2.congestion,
-          styles = _store$getState2.styles,
-          interactive = _store$getState2.interactive,
-          compile = _store$getState2.compile;
+      var _this$_store$getState2 = this._store.getState(),
+        profile = _this$_store$getState2.profile,
+        alternatives = _this$_store$getState2.alternatives,
+        congestion = _this$_store$getState2.congestion,
+        styles = _this$_store$getState2.styles,
+        interactive = _this$_store$getState2.interactive,
+        compile = _this$_store$getState2.compile;
 
       // Emit any default or option set config
-
-
-      this.actions.eventEmit('profile', { profile: profile });
-
+      this.actions.eventEmit('profile', {
+        profile: profile
+      });
       var geojson = {
         type: 'geojson',
         data: {
@@ -8018,58 +8068,80 @@ var MapboxDirections = function () {
 
       // Add and set data theme layer/style
       this._map.addSource('directions', geojson);
+      this._map.addSource('directions:markers', geojson);
 
       // Add direction specific styles to the map
       if (styles && styles.length) styles.forEach(function (style) {
         return _this2._map.addLayer(style);
       });
-      _directions_style2.default.forEach(function (style) {
+      _directions_style["default"].forEach(function (style) {
         // only add the default style layer if a custom layer wasn't provided
         if (!_this2._map.getLayer(style.id)) _this2._map.addLayer(style);
       });
-
       if (interactive) {
         this._map.on('mousedown', this.onDragDown);
         this._map.on('mousemove', this.move);
         this._map.on('click', this.onClick);
-
         this._map.on('touchstart', this.move);
         this._map.on('touchstart', this.onDragDown);
       }
     }
   }, {
-    key: 'subscribedActions',
-    value: function subscribedActions() {
+    key: "_areMarkersChangedOnly",
+    value: function _areMarkersChangedOnly(state) {
       var _this3 = this;
-
-      this.storeUnsubscribe = store.subscribe(function () {
-        var _store$getState3 = store.getState(),
-            origin = _store$getState3.origin,
-            destination = _store$getState3.destination,
-            hoverMarker = _store$getState3.hoverMarker,
-            directions = _store$getState3.directions,
-            routeIndex = _store$getState3.routeIndex;
-
-        var geojson = {
+      var changedSubscriptionFields = [];
+      if (!this._stateSnapshot) {
+        return false;
+      }
+      MapboxDirections.SUBSCRIPTION_FIELDS.forEach(function (field) {
+        if (_this3._stateSnapshot[field] !== state[field]) {
+          changedSubscriptionFields.push(field);
+        }
+      });
+      return changedSubscriptionFields.length <= MapboxDirections.MARKER_FIELDS.length && changedSubscriptionFields.every(function (field) {
+        return MapboxDirections.MARKER_FIELDS.includes(field);
+      });
+    }
+  }, {
+    key: "subscribedActions",
+    value: function subscribedActions() {
+      var _this4 = this;
+      this.storeUnsubscribe = this._store.subscribe(function () {
+        var state = _this4._store.getState();
+        var origin = state.origin,
+          destination = state.destination,
+          hoverMarker = state.hoverMarker,
+          directions = state.directions,
+          routeIndex = state.routeIndex;
+        var markersChangedOnly = _this4._areMarkersChangedOnly(state);
+        _this4._stateSnapshot = state;
+        var markersGeojson = {
           type: 'FeatureCollection',
           features: [origin, destination, hoverMarker].filter(function (d) {
             return d.geometry;
           })
         };
-
+        if (_this4._map.style && _this4._map.getSource('directions:markers')) {
+          _this4._map.getSource('directions:markers').setData(markersGeojson);
+        }
+        if (markersChangedOnly) {
+          return;
+        }
+        var geojson = {
+          type: 'FeatureCollection',
+          features: []
+        };
         if (directions.length) {
           directions.forEach(function (feature, index) {
-
             var features = [];
-
             var decoded = (0, _polyline.decode)(feature.geometry, 5).map(function (c) {
               return c.reverse();
             });
-
+            var allSteps = _utils["default"].getAllSteps(feature);
             decoded.forEach(function (c, i) {
               var previous = features[features.length - 1];
               var congestion = feature.legs[0].annotation && feature.legs[0].annotation.congestion && feature.legs[0].annotation.congestion[i - 1];
-
               if (previous && (!congestion || previous.properties.congestion === congestion)) {
                 previous.geometry.coordinates.push(c);
               } else {
@@ -8086,26 +8158,24 @@ var MapboxDirections = function () {
 
                 // New segment starts with previous segment's last coordinate.
                 if (previous) segment.geometry.coordinates.push(previous.geometry.coordinates[previous.geometry.coordinates.length - 1]);
-
                 segment.geometry.coordinates.push(c);
-
                 if (congestion) {
                   segment.properties.congestion = feature.legs[0].annotation.congestion[i - 1];
                 }
-
                 features.push(segment);
               }
             });
-
             geojson.features = geojson.features.concat(features);
-
             if (index === routeIndex) {
               // Collect any possible waypoints from steps
-              feature.legs[0].steps.forEach(function (d) {
+              allSteps.forEach(function (d) {
                 if (d.maneuver.type === 'waypoint') {
                   geojson.features.push({
                     type: 'Feature',
-                    geometry: d.maneuver.location,
+                    geometry: {
+                      type: 'Point',
+                      coordinates: d.maneuver.location
+                    },
                     properties: {
                       id: 'waypoint'
                     }
@@ -8115,21 +8185,25 @@ var MapboxDirections = function () {
             }
           });
         }
-
-        if (_this3._map.style && _this3._map.getSource('directions')) {
-          _this3._map.getSource('directions').setData(geojson);
+        if (_this4._map.style && _this4._map.getSource('directions')) {
+          _this4._map.getSource('directions').setData(geojson);
         }
       });
     }
   }, {
-    key: '_clickHandler',
+    key: "_initStore",
+    value: function _initStore() {
+      var storeWithMiddleware = (0, _redux.applyMiddleware)(_reduxThunk["default"])(_redux.createStore);
+      return storeWithMiddleware(_reducers["default"]);
+    }
+  }, {
+    key: "_clickHandler",
     value: function _clickHandler() {
       var timer = null;
       var delay = 250;
       return function (event) {
         if (!timer) {
           var singleClickHandler = this._onSingleClick.bind(this);
-
           timer = setTimeout(function () {
             singleClickHandler(event);
             timer = null;
@@ -8142,56 +8216,47 @@ var MapboxDirections = function () {
       };
     }
   }, {
-    key: '_onSingleClick',
+    key: "_onSingleClick",
     value: function _onSingleClick(e) {
-      var _this4 = this;
-
-      var _store$getState4 = store.getState(),
-          origin = _store$getState4.origin;
-
+      var _this5 = this;
+      var _this$_store$getState3 = this._store.getState(),
+        origin = _this$_store$getState3.origin;
       var coords = [e.lngLat.lng, e.lngLat.lat];
-
       if (!origin.geometry) {
         this.actions.setOriginFromCoordinates(coords);
       } else {
-
         var features = this._map.queryRenderedFeatures(e.point, {
           layers: ['directions-origin-point', 'directions-destination-point', 'directions-waypoint-point', 'directions-route-line-alt']
         });
-
         if (features.length) {
-
           // Remove any waypoints
           features.forEach(function (f) {
             if (f.layer.id === 'directions-waypoint-point') {
-              _this4.actions.removeWaypoint(f);
+              _this5.actions.removeWaypoint(f);
             }
           });
-
           if (features[0].properties.route === 'alternate') {
             var index = features[0].properties['route-index'];
             this.actions.setRouteIndex(index);
           }
         } else {
           this.actions.setDestinationFromCoordinates(coords);
-          this._map.flyTo({ center: coords });
+          this._map.flyTo({
+            center: coords
+          });
         }
       }
     }
   }, {
-    key: '_move',
+    key: "_move",
     value: function _move(e) {
-      var _this5 = this;
-
-      var _store$getState5 = store.getState(),
-          hoverMarker = _store$getState5.hoverMarker;
-
+      var _this6 = this;
+      var _this$_store$getState4 = this._store.getState(),
+        hoverMarker = _this$_store$getState4.hoverMarker;
       var features = this._map.queryRenderedFeatures(e.point, {
         layers: ['directions-route-line-alt', 'directions-route-line', 'directions-origin-point', 'directions-destination-point', 'directions-hover-point']
       });
-
       this._map.getCanvas().style.cursor = features.length ? 'pointer' : '';
-
       if (features.length) {
         this.isCursorOverPoint = features[0];
         this._map.dragPan.disable();
@@ -8199,9 +8264,9 @@ var MapboxDirections = function () {
         // Add a possible waypoint marker when hovering over the active route line
         features.forEach(function (feature) {
           if (feature.layer.id === 'directions-route-line') {
-            _this5.actions.hoverMarker([e.lngLat.lng, e.lngLat.lat]);
+            _this6.actions.hoverMarker([e.lngLat.lng, e.lngLat.lat]);
           } else if (hoverMarker.geometry) {
-            _this5.actions.hoverMarker(null);
+            _this6.actions.hoverMarker(null);
           }
         });
       } else if (this.isCursorOverPoint) {
@@ -8210,23 +8275,20 @@ var MapboxDirections = function () {
       }
     }
   }, {
-    key: '_onDragDown',
+    key: "_onDragDown",
     value: function _onDragDown() {
       if (!this.isCursorOverPoint) return;
       this.isDragging = this.isCursorOverPoint;
       this._map.getCanvas().style.cursor = 'grab';
-
       this._map.on('mousemove', this.onDragMove);
       this._map.on('mouseup', this.onDragUp);
-
       this._map.on('touchmove', this.onDragMove);
       this._map.on('touchend', this.onDragUp);
     }
   }, {
-    key: '_onDragMove',
+    key: "_onDragMove",
     value: function _onDragMove(e) {
       if (!this.isDragging) return;
-
       var coords = [e.lngLat.lng, e.lngLat.lat];
       switch (this.isDragging.layer.id) {
         case 'directions-origin-point':
@@ -8241,15 +8303,13 @@ var MapboxDirections = function () {
       }
     }
   }, {
-    key: '_onDragUp',
+    key: "_onDragUp",
     value: function _onDragUp() {
       if (!this.isDragging) return;
-
-      var _store$getState6 = store.getState(),
-          hoverMarker = _store$getState6.hoverMarker,
-          origin = _store$getState6.origin,
-          destination = _store$getState6.destination;
-
+      var _this$_store$getState5 = this._store.getState(),
+        hoverMarker = _this$_store$getState5.hoverMarker,
+        origin = _this$_store$getState5.origin,
+        destination = _this$_store$getState5.destination;
       switch (this.isDragging.layer.id) {
         case 'directions-origin-point':
           this.actions.setOriginFromCoordinates(origin.geometry.coordinates);
@@ -8259,18 +8319,15 @@ var MapboxDirections = function () {
           break;
         case 'directions-hover-point':
           // Add waypoint if a sufficent amount of dragging has occurred.
-          if (hoverMarker.geometry && !_utils2.default.coordinateMatch(this.isDragging, hoverMarker)) {
+          if (hoverMarker.geometry && !_utils["default"].coordinateMatch(this.isDragging, hoverMarker)) {
             this.actions.addWaypoint(0, hoverMarker);
           }
           break;
       }
-
       this.isDragging = false;
       this._map.getCanvas().style.cursor = '';
-
       this._map.off('touchmove', this.onDragMove);
       this._map.off('touchend', this.onDragUp);
-
       this._map.off('mousemove', this.onDragMove);
       this._map.off('mouseup', this.onDragUp);
     }
@@ -8283,26 +8340,22 @@ var MapboxDirections = function () {
      * @param {Boolean} state sets interactivity based on a state of `true` or `false`.
      * @returns {MapboxDirections} this
      */
-
   }, {
-    key: 'interactive',
+    key: "interactive",
     value: function interactive(state) {
       if (state) {
         this._map.on('touchstart', this.move);
         this._map.on('touchstart', this.onDragDown);
-
         this._map.on('mousedown', this.onDragDown);
         this._map.on('mousemove', this.move);
         this._map.on('click', this.onClick);
       } else {
         this._map.off('touchstart', this.move);
         this._map.off('touchstart', this.onDragDown);
-
         this._map.off('mousedown', this.onDragDown);
         this._map.off('mousemove', this.move);
         this._map.off('click', this.onClick);
       }
-
       return this;
     }
 
@@ -8310,11 +8363,10 @@ var MapboxDirections = function () {
      * Returns the origin of the current route.
      * @returns {Object} origin
      */
-
   }, {
-    key: 'getOrigin',
+    key: "getOrigin",
     value: function getOrigin() {
-      return store.getState().origin;
+      return this._store.getState().origin;
     }
 
     /**
@@ -8323,16 +8375,14 @@ var MapboxDirections = function () {
      * @param {Array<number>|String} query An array of coordinates [lng, lat] or location name as a string.
      * @returns {MapboxDirections} this
      */
-
   }, {
-    key: 'setOrigin',
+    key: "setOrigin",
     value: function setOrigin(query) {
       if (typeof query === 'string') {
         this.actions.queryOrigin(query);
       } else {
         this.actions.setOriginFromCoordinates(query);
       }
-
       return this;
     }
 
@@ -8340,11 +8390,10 @@ var MapboxDirections = function () {
      * Returns the destination of the current route.
      * @returns {Object} destination
      */
-
   }, {
-    key: 'getDestination',
+    key: "getDestination",
     value: function getDestination() {
-      return store.getState().destination;
+      return this._store.getState().destination;
     }
 
     /**
@@ -8353,16 +8402,14 @@ var MapboxDirections = function () {
      * @param {Array<number>|String} query An array of coordinates [lng, lat] or location name as a string.
      * @returns {MapboxDirections} this
      */
-
   }, {
-    key: 'setDestination',
+    key: "setDestination",
     value: function setDestination(query) {
       if (typeof query === 'string') {
         this.actions.queryDestination(query);
       } else {
         this.actions.setDestinationFromCoordinates(query);
       }
-
       return this;
     }
 
@@ -8370,9 +8417,8 @@ var MapboxDirections = function () {
      * Swap the origin and destination.
      * @returns {MapboxDirections} this
      */
-
   }, {
-    key: 'reverse',
+    key: "reverse",
     value: function reverse() {
       this.actions.reverse();
       return this;
@@ -8385,11 +8431,12 @@ var MapboxDirections = function () {
      * @param {Array<number>|Point} waypoint can be a GeoJSON Point Feature or [lng, lat] coordinates.
      * @returns {MapboxDirections} this;
      */
-
   }, {
-    key: 'addWaypoint',
+    key: "addWaypoint",
     value: function addWaypoint(index, waypoint) {
-      if (!waypoint.type) waypoint = _utils2.default.createPoint(waypoint, { id: 'waypoint' });
+      if (!waypoint.type) waypoint = _utils["default"].createPoint(waypoint, {
+        id: 'waypoint'
+      });
       this.actions.addWaypoint(index, waypoint);
       return this;
     }
@@ -8402,11 +8449,12 @@ var MapboxDirections = function () {
      * @param {Array<number>|Point} waypoint can be a GeoJSON Point Feature or [lng, lat] coordinates.
      * @returns {MapboxDirections} this;
      */
-
   }, {
-    key: 'setWaypoint',
+    key: "setWaypoint",
     value: function setWaypoint(index, waypoint) {
-      if (!waypoint.type) waypoint = _utils2.default.createPoint(waypoint, { id: 'waypoint' });
+      if (!waypoint.type) waypoint = _utils["default"].createPoint(waypoint, {
+        id: 'waypoint'
+      });
       this.actions.setWaypoint(index, waypoint);
       return this;
     }
@@ -8416,13 +8464,11 @@ var MapboxDirections = function () {
      * @param {Number} index position in the waypoints array.
      * @returns {MapboxDirections} this;
      */
-
   }, {
-    key: 'removeWaypoint',
+    key: "removeWaypoint",
     value: function removeWaypoint(index) {
-      var _store$getState7 = store.getState(),
-          waypoints = _store$getState7.waypoints;
-
+      var _this$_store$getState6 = this._store.getState(),
+        waypoints = _this$_store$getState6.waypoints;
       this.actions.removeWaypoint(waypoints[index]);
       return this;
     }
@@ -8431,11 +8477,10 @@ var MapboxDirections = function () {
      * Fetch all current waypoints in a route.
      * @returns {Array} waypoints
      */
-
   }, {
-    key: 'getWaypoints',
+    key: "getWaypoints",
     value: function getWaypoints() {
-      return store.getState().waypoints;
+      return this._store.getState().waypoints;
     }
 
     /**
@@ -8443,9 +8488,8 @@ var MapboxDirections = function () {
      *
      * @returns {MapboxDirections} this;
      */
-
   }, {
-    key: 'removeRoutes',
+    key: "removeRoutes",
     value: function removeRoutes() {
       this.actions.clearOrigin();
       this.actions.clearDestination();
@@ -8466,26 +8510,26 @@ var MapboxDirections = function () {
      * @param {Function} fn function that's called when the event is emitted.
      * @returns {MapboxDirections} this;
      */
-
   }, {
-    key: 'on',
+    key: "on",
     value: function on(type, fn) {
       this.actions.eventSubscribe(type, fn);
       return this;
     }
   }]);
-
   return MapboxDirections;
 }();
+exports["default"] = MapboxDirections;
+MapboxDirections.MARKER_FIELDS = ['origin', 'destination', 'hoverMarker'];
+MapboxDirections.SUBSCRIPTION_FIELDS = ['origin', 'destination', 'hovedMarker', 'directions', 'routeIndex'];
 
-exports.default = MapboxDirections;
-
-},{"./actions":38,"./controls/inputs":41,"./controls/instructions":42,"./directions_style":44,"./reducers":46,"./utils":47,"@mapbox/polyline":1,"redux":28,"redux-thunk":22}],44:[function(require,module,exports){
-'use strict';
+},{"./actions":25,"./controls/inputs":28,"./controls/instructions":29,"./directions_style":31,"./reducers":33,"./utils":34,"@mapbox/polyline":6,"redux":18,"redux-thunk":17}],31:[function(require,module,exports){
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports["default"] = void 0;
 var style = [{
   'id': 'directions-route-line-alt',
   'type': 'line',
@@ -8533,7 +8577,7 @@ var style = [{
 }, {
   'id': 'directions-hover-point-casing',
   'type': 'circle',
-  'source': 'directions',
+  'source': 'directions:markers',
   'paint': {
     'circle-radius': 8,
     'circle-color': '#fff'
@@ -8542,7 +8586,7 @@ var style = [{
 }, {
   'id': 'directions-hover-point',
   'type': 'circle',
-  'source': 'directions',
+  'source': 'directions:markers',
   'paint': {
     'circle-radius': 6,
     'circle-color': '#3bb2d0'
@@ -8551,7 +8595,7 @@ var style = [{
 }, {
   'id': 'directions-waypoint-point-casing',
   'type': 'circle',
-  'source': 'directions',
+  'source': 'directions:markers',
   'paint': {
     'circle-radius': 8,
     'circle-color': '#fff'
@@ -8560,7 +8604,7 @@ var style = [{
 }, {
   'id': 'directions-waypoint-point',
   'type': 'circle',
-  'source': 'directions',
+  'source': 'directions:markers',
   'paint': {
     'circle-radius': 6,
     'circle-color': '#8a8bc9'
@@ -8569,7 +8613,7 @@ var style = [{
 }, {
   'id': 'directions-origin-point',
   'type': 'circle',
-  'source': 'directions',
+  'source': 'directions:markers',
   'paint': {
     'circle-radius': 18,
     'circle-color': '#3bb2d0'
@@ -8578,7 +8622,7 @@ var style = [{
 }, {
   'id': 'directions-origin-label',
   'type': 'symbol',
-  'source': 'directions',
+  'source': 'directions:markers',
   'layout': {
     'text-field': 'A',
     'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
@@ -8591,7 +8635,7 @@ var style = [{
 }, {
   'id': 'directions-destination-point',
   'type': 'circle',
-  'source': 'directions',
+  'source': 'directions:markers',
   'paint': {
     'circle-radius': 18,
     'circle-color': '#8a8bc9'
@@ -8600,7 +8644,7 @@ var style = [{
 }, {
   'id': 'directions-destination-label',
   'type': 'symbol',
-  'source': 'directions',
+  'source': 'directions:markers',
   'layout': {
     'text-field': 'B',
     'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
@@ -8611,143 +8655,122 @@ var style = [{
   },
   'filter': ['all', ['in', '$type', 'Point'], ['in', 'marker-symbol', 'B']]
 }];
+var _default = style;
+exports["default"] = _default;
 
-exports.default = style;
+},{}],32:[function(require,module,exports){
+"use strict";
 
-},{}],45:[function(require,module,exports){
-'use strict';
+var _directions = _interopRequireDefault(require("./directions"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+module.exports = _directions["default"];
 
-var _directions = require('./directions');
+},{"./directions":30}],33:[function(require,module,exports){
+"use strict";
 
-var _directions2 = _interopRequireDefault(_directions);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-module.exports = _directions2.default;
-
-},{"./directions":43}],46:[function(require,module,exports){
-'use strict';
-
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-var _action_types = require('../constants/action_types.js');
-
-var types = _interopRequireWildcard(_action_types);
-
-var _deepAssign = require('deep-assign');
-
-var _deepAssign2 = _interopRequireDefault(_deepAssign);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-var initialState = {
-  // Options set on initialization
-  api: 'https://api.mapbox.com/directions/v5/',
-  profile: 'mapbox/driving-traffic',
-  alternatives: false,
-  congestion: false,
-  unit: 'imperial',
-  flyTo: true,
-  placeholderOrigin: 'Choose a starting place',
-  placeholderDestination: 'Choose destination',
-  zoom: 16,
-  language: 'en',
-  compile: null,
-  proximity: false,
-  styles: [],
-
-  // UI controls
-  controls: {
-    profileSwitcher: true,
-    inputs: true,
-    instructions: true
-  },
-
-  // Optional setting to pass options available to mapbox-gl-geocoder
-  geocoder: {},
-
-  interactive: true,
-
-  // Container for client registered events
-  events: {},
-
-  // Marker feature drawn on the map at any point.
-  origin: {},
-  destination: {},
-  hoverMarker: {},
-  waypoints: [],
-
-  // User input strings or result returned from geocoder
-  originQuery: null,
-  destinationQuery: null,
-  originQueryCoordinates: null,
-  destinationQueryCoordinates: null,
-
-  // Directions data
-  directions: [],
-  routeIndex: 0,
-  routePadding: 80
+exports["default"] = void 0;
+var types = _interopRequireWildcard(require("../constants/action_types.js"));
+var _mergeOptions = _interopRequireDefault(require("merge-options"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+var getInitialState = function getInitialState() {
+  return {
+    // Options set on initialization
+    api: 'https://api.mapbox.com/directions/v5/',
+    profile: 'mapbox/driving-traffic',
+    alternatives: false,
+    congestion: false,
+    unit: 'imperial',
+    flyTo: true,
+    placeholderOrigin: 'Choose a starting place',
+    placeholderDestination: 'Choose destination',
+    zoom: 16,
+    language: 'en',
+    compile: null,
+    proximity: false,
+    styles: [],
+    // UI controls
+    controls: {
+      profileSwitcher: true,
+      inputs: true,
+      instructions: true
+    },
+    instructions: {
+      showWaypointInstructions: true
+    },
+    // Optional setting to pass options available to mapbox-gl-geocoder
+    geocoder: {},
+    interactive: true,
+    // Container for client registered events
+    events: {},
+    // Marker feature drawn on the map at any point.
+    origin: {},
+    destination: {},
+    hoverMarker: {},
+    waypoints: [],
+    // User input strings or result returned from geocoder
+    originQuery: null,
+    destinationQuery: null,
+    originQueryCoordinates: null,
+    destinationQueryCoordinates: null,
+    // Directions data
+    directions: [],
+    fetchDirectionsRequest: null,
+    routeIndex: 0,
+    routePadding: 80
+  };
 };
-
 function data() {
-  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
-  var action = arguments[1];
-
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : getInitialState();
+  var action = arguments.length > 1 ? arguments[1] : undefined;
   switch (action.type) {
     case types.SET_OPTIONS:
-      return (0, _deepAssign2.default)({}, state, action.options);
-
+      {
+        return (0, _mergeOptions["default"])({}, state, action.options);
+      }
     case types.DIRECTIONS_PROFILE:
       return Object.assign({}, state, {
         profile: action.profile
       });
-
     case types.ORIGIN:
       return Object.assign({}, state, {
         origin: action.origin,
         hoverMarker: {}
       });
-
     case types.DESTINATION:
       return Object.assign({}, state, {
         destination: action.destination,
         hoverMarker: {}
       });
-
     case types.HOVER_MARKER:
       return Object.assign({}, state, {
         hoverMarker: action.hoverMarker
       });
-
     case types.WAYPOINTS:
       return Object.assign({}, state, {
         waypoints: action.waypoints
       });
-
     case types.ORIGIN_QUERY:
       return Object.assign({}, state, {
         originQuery: action.query
       });
-
     case types.DESTINATION_QUERY:
       return Object.assign({}, state, {
         destinationQuery: action.query
       });
-
     case types.ORIGIN_FROM_COORDINATES:
       return Object.assign({}, state, {
         originQueryCoordinates: action.coordinates
       });
-
     case types.DESTINATION_FROM_COORDINATES:
       return Object.assign({}, state, {
         destinationQueryCoordinates: action.coordinates
       });
-
     case types.ORIGIN_CLEAR:
       return Object.assign({}, state, {
         origin: {},
@@ -8755,7 +8778,6 @@ function data() {
         waypoints: [],
         directions: []
       });
-
     case types.DESTINATION_CLEAR:
       return Object.assign({}, state, {
         destination: {},
@@ -8763,51 +8785,50 @@ function data() {
         waypoints: [],
         directions: []
       });
-
+    case types.DIRECTIONS_REQUEST_START:
+      return Object.assign({}, state, {
+        fetchDirectionsRequest: action.request
+      });
     case types.DIRECTIONS:
       return Object.assign({}, state, {
-        directions: action.directions
+        directions: action.directions,
+        fetchDirectionsRequest: null
       });
-
     case types.ROUTE_INDEX:
       return Object.assign({}, state, {
         routeIndex: action.routeIndex
       });
-
     case types.ERROR:
       return Object.assign({}, state, {
         error: action.error
       });
-
     default:
       return state;
   }
 }
+var _default = data;
+exports["default"] = _default;
 
-exports.default = data;
-
-},{"../constants/action_types.js":39,"deep-assign":2}],47:[function(require,module,exports){
-'use strict';
+},{"../constants/action_types.js":26,"merge-options":14}],34:[function(require,module,exports){
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports["default"] = void 0;
 function validCoords(coords) {
   return coords[0] >= -180 && coords[0] <= 180 && coords[1] >= -90 && coords[1] <= 90;
 }
-
 function coordinateMatch(a, b) {
   a = a.geometry.coordinates;
   b = b.geometry.coordinates;
   return a.join() === b.join() || a[0].toFixed(3) === b[0].toFixed(3) && a[1].toFixed(3) === b[1].toFixed(3);
 }
-
 function wrap(n) {
   var d = 180 - -180;
   var w = ((n - -180) % d + d) % d + -180;
   return w === -180 ? 180 : w;
 }
-
 function roundWithOriginalPrecision(input, original) {
   var precision = 0;
   if (Math.floor(original) !== original) {
@@ -8815,7 +8836,6 @@ function roundWithOriginalPrecision(input, original) {
   }
   return input.toFixed(Math.min(precision, 5));
 }
-
 function createPoint(coordinates, properties) {
   return {
     type: 'Feature',
@@ -8826,11 +8846,24 @@ function createPoint(coordinates, properties) {
     properties: properties ? properties : {}
   };
 }
-
+function getAllSteps(feature, filterBy) {
+  return feature.legs.reduce(function (steps, leg, idx) {
+    if (idx > 0) {
+      steps[steps.length - 1].maneuver.type = 'waypoint';
+      leg.steps[0].maneuver.type = '';
+    }
+    var allSteps = steps.concat(leg.steps);
+    if (filterBy) {
+      return allSteps.filter(filterBy);
+    } else {
+      return allSteps;
+    }
+  }, []);
+}
 var format = {
   duration: function duration(s) {
     var m = Math.floor(s / 60),
-        h = Math.floor(m / 60);
+      h = Math.floor(m / 60);
     s %= 60;
     m %= 60;
     if (h === 0 && m === 0) return s + 's';
@@ -8851,8 +8884,16 @@ var format = {
     return m.toFixed(0) + 'm';
   }
 };
+var _default = {
+  format: format,
+  coordinateMatch: coordinateMatch,
+  createPoint: createPoint,
+  validCoords: validCoords,
+  wrap: wrap,
+  roundWithOriginalPrecision: roundWithOriginalPrecision,
+  getAllSteps: getAllSteps
+};
+exports["default"] = _default;
 
-exports.default = { format: format, coordinateMatch: coordinateMatch, createPoint: createPoint, validCoords: validCoords, wrap: wrap, roundWithOriginalPrecision: roundWithOriginalPrecision };
-
-},{}]},{},[45])(45)
+},{}]},{},[32])(32)
 });
